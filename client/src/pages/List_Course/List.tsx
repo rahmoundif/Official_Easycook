@@ -39,7 +39,7 @@ function List() {
     const ingredientsToMap: TypeIngredient[] = [];
     recipeGroupById.map((item) => {
       fetch(
-        `${import.meta.env.VITE_API_URL}/api/recipe/detail/${item.recipeId}`,
+        `${import.meta.env.VITE_API_URL}recipe/detail/${item.recipeId}`,
       )
         .then((response) => response.json())
         .then((data) => {
@@ -50,7 +50,7 @@ function List() {
         });
 
       fetch(
-        `${import.meta.env.VITE_API_URL}/api/ingredient/recipe/${item.recipeId}`,
+        `${import.meta.env.VITE_API_URL}ingredient/recipe/${item.recipeId}`,
       )
         .then((response) => response.json())
         .then((data) => {
@@ -87,7 +87,7 @@ function List() {
       const token = localStorage.getItem("token");
       console.log(currentList);
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/member/${userOnline?.id}/list`,
+        `${import.meta.env.VITE_API_URL}member/${userOnline?.id}/list`,
         {
           method: "POST",
           headers: {

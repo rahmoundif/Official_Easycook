@@ -14,7 +14,7 @@ function MemberCommentedList() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/member/${idUserOnline}/comments`,
+      `${import.meta.env.VITE_API_URL}member/${idUserOnline}/comments`,
       {
         headers: {
           "Content-Type": "application/json",

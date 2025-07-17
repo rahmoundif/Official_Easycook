@@ -15,7 +15,7 @@ function MemberAccountPage() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/member/${idUserOnline}/profile`,
+      `${import.meta.env.VITE_API_URL}member/${idUserOnline}/profile`,
       {
         headers: {
           "Content-Type": "application/json",

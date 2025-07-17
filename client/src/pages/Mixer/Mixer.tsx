@@ -48,7 +48,7 @@ function Mixer() {
   const [openType, setOpenType] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ingredients/by-type`)
+    fetch(`${import.meta.env.VITE_API_URL}ingredients/by-type`)
       .then((res) => res.json())
       .then(setIngredients);
   }, []);
@@ -75,7 +75,7 @@ function Mixer() {
         .map((i) => i.ingredient_id);
 
       fetch(
-        `${import.meta.env.VITE_API_URL}/api/recipe/by-ingredients?ings=${selectedIds.join(",")}`,
+        `${import.meta.env.VITE_API_URL}recipe/by-ingredients?ings=${selectedIds.join(",")}`,
       )
         .then((res) => res.json())
         .then(setRecipes)

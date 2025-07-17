@@ -20,7 +20,7 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
     const nextValue = !isFavorite;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/member/favorite/recipe`,
+        `${import.meta.env.VITE_API_URL}/member/favorite/recipe`,
         {
           method: "POST",
           headers: {

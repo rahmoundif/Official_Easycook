@@ -34,22 +34,22 @@ function DetailsRecipe() {
 
   // Fetch the recipe details using the recipeId
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/recipe/detail/${recipeId}`)
+    fetch(`${import.meta.env.VITE_API_URL}recipe/detail/${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipe(data);
       });
-    fetch(`${import.meta.env.VITE_API_URL}/api/ingredient/recipe/${recipeId}`)
+    fetch(`${import.meta.env.VITE_API_URL}ingredient/recipe/${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
         setIngredients(data);
       });
-    fetch(`${import.meta.env.VITE_API_URL}/api/ustensil/recipe/${recipeId}`)
+    fetch(`${import.meta.env.VITE_API_URL}ustensil/recipe/${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
         setUstensils(data);
       });
-    fetch(`${import.meta.env.VITE_API_URL}/api/rate/recipe/${recipeId}`)
+    fetch(`${import.meta.env.VITE_API_URL}rate/recipe/${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
         setRate(data.rate);
@@ -73,7 +73,7 @@ function DetailsRecipe() {
       });
       navigate("/Compte");
     } else {
-      fetch(`${import.meta.env.VITE_API_URL}/api/member/rate/recipe`, {
+      fetch(`${import.meta.env.VITE_API_URL}member/rate/recipe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,17 +163,17 @@ function DetailsRecipe() {
             onUpdate={() => {
               // Recharge la recette et ses ingrédients/ustensiles
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/recipe/detail/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}recipe/detail/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setRecipe(data));
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/ingredient/recipe/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}ingredient/recipe/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setIngredients(data));
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/ustensil/recipe/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}ustensil/recipe/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setUstensils(data));
@@ -350,17 +350,17 @@ function DetailsRecipe() {
             onUpdate={() => {
               // Recharge la recette et ses ingrédients/ustensiles
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/recipe/detail/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}recipe/detail/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setRecipe(data));
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/ingredient/recipe/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}ingredient/recipe/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setIngredients(data));
               fetch(
-                `${import.meta.env.VITE_API_URL}/api/ustensil/recipe/${recipeId}`,
+                `${import.meta.env.VITE_API_URL}ustensil/recipe/${recipeId}`,
               )
                 .then((response) => response.json())
                 .then((data) => setUstensils(data));

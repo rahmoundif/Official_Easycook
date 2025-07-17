@@ -22,7 +22,7 @@ function MemberRegisteredList() {
   useEffect(() => {
     if (!idUserOnline) return;
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/member/${idUserOnline}/registeredlist`,
+      `${import.meta.env.VITE_API_URL}member/${idUserOnline}/registeredlist`,
       {
         headers: {
           "Content-Type": "application/json",
