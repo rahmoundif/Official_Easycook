@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900");
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "daisyui";
+@layer base {
+  /* Affect Safari/Chrome autofill in all its states */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    /* Tailwind utilities via @apply: */
+    @theme bg-white text-black;
+    /* Then force the inset white bg and black text */
+    box-shadow: 0 0 0px 1000px #fde9cc inset !important;
+    -webkit-text-fill-color: #452a00 !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "league spartan", sans-serif;
+  letter-spacing: 1px;
+}
+
+:root {
+  --color-primary: #dd682d;
+  --color-secondary: #452a00;
+  --color-background: #fde9cc;
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+body {
+  background-color: #fde9cc;
+}
+
+h1 {
+  font-size: 28px;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+h2,
+p {
+  color: var(--color-secondary);
+}
+
+h3 {
+  font-size: 18px;
+  color: var(--color-secondary);
+  font-weight: bold;
+}
+
+a {
+  font-weight: semi-bold;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(-8px, 2px) rotate(-10deg);
+  }
+  40% {
+    transform: translate(8px, -2px) rotate(9deg);
+  }
+  60% {
+    transform: translate(-8px, 2px) rotate(-14deg);
+  }
+  80% {
+    transform: translate(8px, -2px) rotate(7deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+.shake {
+  animation: shake 0.7s infinite;
+}
