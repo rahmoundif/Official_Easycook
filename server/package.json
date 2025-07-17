@@ -3,9 +3,9 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "dev": "tsx watch --clear-screen=false ./src/main",
-    "db:migrate": "tsx ./bin/migrate",
-    "db:seed": "tsx ./bin/seed",
-    "build": "tsx ./bin/migrate",
+    "db:migrate": "tsx ",
+    "db:seed": "tsx ",
+    "build": "tsx ",
     "start": "tsx ./src/main",
     "test": "jest --verbose"
   },
