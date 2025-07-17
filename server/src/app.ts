@@ -21,22 +21,21 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 
 import cors from "cors";
 
-if (process.env.CLIENT_URL != null) {
-  app.use(cors({ origin: [process.env.CLIENT_URL] }));
+// CORS configuration - Allow your specific client domain
+const allowedOrigins = [
+  'https://officialeasycook.vercel.app', // Your production client
+  'http://localhost:3000', // Local development
+];
+
+// Add CLIENT_URL from environment if it exists
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
 }
 
-// If you need to allow extra origins, you can add something like this:
-
-/*
-app.use(
-  cors({
-    origin: ["http://mysite.com", "http://another-domain.com"],
-  }),
-);
-*/
-
-// With ["http://mysite.com", "http://another-domain.com"]
-// to be replaced with an array of your trusted origins
+app.use(cors({ 
+  origin: allowedOrigins,
+  credentials: true 
+}));
 
 /* ************************************************************************* */
 

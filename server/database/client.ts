@@ -10,6 +10,8 @@ const client = new Pool({
   user: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
+  // SSL configuration for Supabase (required for production)
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 // Ready to export

@@ -74,7 +74,7 @@ export function UserProvider({ children }: ContextInterface) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!isConnected) {
-      fetch(`${import.meta.env.VITE_API_URL}member`, {
+      fetch(`${import.meta.env.VITE_API_URL}/member`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("token") || "",
