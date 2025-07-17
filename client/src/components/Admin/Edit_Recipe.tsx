@@ -48,13 +48,13 @@ function Edit_Recipe({
   const [isUstensilsOpen, setIsUstensilsOpen] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}ingredient`)
+    fetch(`${import.meta.env.VITE_API_URL}/ingredient`)
       .then((res) => res.json())
       .then((data) => setAllIngredients(data));
-    fetch(`${import.meta.env.VITE_API_URL}ustensil`)
+    fetch(`${import.meta.env.VITE_API_URL}/ustensil`)
       .then((res) => res.json())
       .then((data) => setAllUstensils(data));
-    fetch(`${import.meta.env.VITE_API_URL}unity`)
+    fetch(`${import.meta.env.VITE_API_URL}/unity`)
       .then((res) => res.json())
       .then((data) => setUnity(data));
   }, []);
@@ -173,7 +173,7 @@ function Edit_Recipe({
       ustensils: selectedUstensils,
     };
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}recipe/${recipeId}`,
+      `${import.meta.env.VITE_API_URL}/recipe/${recipeId}`,
       {
         method: "PATCH",
         headers: {

@@ -53,7 +53,7 @@ function MemberManage() {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}admin/${idUserOnline}?idToDelete=${memberId}`,
+        `${import.meta.env.VITE_API_URL}/admin/${idUserOnline}?idToDelete=${memberId}`,
         {
           method: "DELETE",
           headers: { Authorization: `${token}` },
@@ -80,7 +80,7 @@ function MemberManage() {
       if (!token) return;
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}admin/member`,
+          `${import.meta.env.VITE_API_URL}/admin/member`,
           {
             headers: {
               Authorization: `${token}`,

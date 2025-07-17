@@ -100,7 +100,7 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const response = await fetch(`${import.meta.env.VITE_API_URL}login`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmitSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const response = await fetch(`${import.meta.env.VITE_API_URL}signup`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +178,7 @@ export function UserProvider({ children }: ContextInterface) {
         style: { background: "#452a00", color: "#fde9cc" },
       });
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}member`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/member`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -218,7 +218,7 @@ export function UserProvider({ children }: ContextInterface) {
     if (!token) return;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}member/${idUserOnline}`,
+        `${import.meta.env.VITE_API_URL}/member/${idUserOnline}`,
         {
           method: "DELETE",
           headers: { Authorization: `${token}` },
