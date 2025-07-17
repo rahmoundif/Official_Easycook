@@ -4,6 +4,7 @@ import express from "express";
 
 const app = express();
 
+app.get("/", (req, res) => res.send("Express on Vercel"));
 // Configure it
 
 /* ************************************************************************* */
@@ -105,6 +106,7 @@ if (fs.existsSync(clientBuildPath)) {
 // Important: Error-handling middleware should be defined last, after other app.use() and routes calls.
 
 import type { ErrorRequestHandler } from "express";
+import { env } from "node:process";
 
 // Define a middleware function to log errors
 const logErrors: ErrorRequestHandler = (err, req, res, next) => {

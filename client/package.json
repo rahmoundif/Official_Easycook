@@ -5,6 +5,7 @@
     "check-types": "tsc --noEmit",
     "dev": "vite --host",
     "build": "tsc && vite build",
+    "vercel-build": "npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
