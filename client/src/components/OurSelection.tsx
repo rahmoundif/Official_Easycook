@@ -7,7 +7,7 @@ function OurSelection() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}recipe/random`)
+    fetch(`${import.meta.env.VITE_API_URL}/recipe/random`)
       .then((response) => response.json())
       .then((data) => {
         setRandomRecipe(data);
