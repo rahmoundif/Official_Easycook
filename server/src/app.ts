@@ -5,6 +5,12 @@ import express from "express";
 const app = express();
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 // Configure it
 
 /* ************************************************************************* */
