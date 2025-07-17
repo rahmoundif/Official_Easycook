@@ -6,7 +6,7 @@ function recipeManage() {
   const handleDelete = async (recipeId: number) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/recipe/${recipeId}`,
+        `${import.meta.env.VITE_API_URL}recipe/${recipeId}`,
         {
           method: "DELETE",
         },
@@ -24,7 +24,7 @@ function recipeManage() {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/admin/recipes`)
+    fetch(`${import.meta.env.VITE_API_URL}admin/recipes`)
       .then((response) => response.json())
       .then((data) => {
         setrecipeList(data);

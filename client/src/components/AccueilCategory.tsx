@@ -7,7 +7,7 @@ function AccueilCategory() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/accueil/category`)
+    fetch(`${import.meta.env.VITE_API_URL}accueil/category`)
       .then((response) => response.json())
       .then((data) => {
         setCategoryRecipe(data);
