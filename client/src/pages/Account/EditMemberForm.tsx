@@ -64,7 +64,7 @@ function EditMemberForm() {
           <button
             type="button"
             onClick={handleDeleteSelfAccount}
-            className=" p-4 rounded-xl bg-red-600 hover:bg-red-700 font-semibold text-white cursor-pointer"
+            className=" p-4 mb-4 rounded-xl bg-red-600 hover:bg-red-700 font-semibold text-white cursor-pointer"
           >
             Supprimer mon compte
           </button>

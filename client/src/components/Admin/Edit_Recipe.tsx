@@ -173,7 +173,7 @@ function Edit_Recipe({
       ustensils: selectedUstensils,
     };
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/recipe/${recipeId}`,
+      `${import.meta.env.VITE_API_URL}/admin/recipe/${recipeId}`,
       {
         method: "PATCH",
         headers: {
@@ -424,11 +424,7 @@ function Edit_Recipe({
                         />
 
                         <select
-                          value={
-                            selectedData?.unity_id !== undefined
-                              ? selectedData.unity_id
-                              : ""
-                          }
+                          value={selectedData?.unity_id || ""}
                           onChange={(e) =>
                             handleIngredientDetailChange(
                               ingredient.id,

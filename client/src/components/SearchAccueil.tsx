@@ -11,13 +11,14 @@ function SearchAccueil() {
   };
 
   return (
-    <section className="flex flex-col lg:flex-row absolute top-25 md:top-40 left-1/2 transform -translate-x-1/2 z-1 text-white items-center">
-      <article className="text-4xl mr-20 hidden lg:flex lg:min-w-80 drop-shadow-lg">
+     <section className="flex flex-col absolute top-20 md:top-30 left-1/2 transform -translate-x-1/2 z-1 text-white items-center justify-center">
+      <article className="relative z-10 lg:flex  text-3xl md:text-4xl lg:text-6xl md:font-semibold font-bold text-white text-center drop-shadow-lg mb-2 animate-fade-in mb-5">
         On mange quoi
         <br />
-        cette semaine ?
+        cette semaine&nbsp;?
       </article>
-      <article className="flex flex-row items-center bg-white/90 rounded-full shadow-lg px-4 py-2 gap-2">
+
+      <article className="flex items-center bg-white/95 border-2 border-primary/50 rounded-full shadow-lg px-4 py-2 gap-2">
         <input
           onChange={(e) => setSearchWord(e.target.value)}
           placeholder="Recette, ingrédient..."
@@ -50,5 +51,6 @@ function SearchAccueil() {
     </section>
   );
 }
+
 
 export default SearchAccueil;

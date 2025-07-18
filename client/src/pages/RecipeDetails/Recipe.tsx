@@ -100,7 +100,7 @@ function Recettes() {
   return (
     <section className="p-5 max-w-screen-xl mx-auto">
       {/* Barre de recherche */}
-      <div className="flex flex-row justify-center items-center gap-3 mb-6">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-3 mb-6">
         <div className="relative">
           <input
             value={searchWord}
@@ -203,7 +203,7 @@ function Recettes() {
       )}
 
       {/* Filtres mobile */}
-      <section className="md:hidden pb-3 text-secondary text-center">
+      <section className="md:hidden pb-3 mr-2 text-secondary text-center">
         <button
           type="button"
           className="rounded-full border-2 border-primary bg-primary/90 text-white px-6 py-2 text-xl font-semibold shadow mb-3 w-full mx-2"
