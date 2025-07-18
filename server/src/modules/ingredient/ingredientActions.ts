@@ -39,9 +39,17 @@ const recipeIngredient: RequestHandler = async (req, res, next) => {
 const browseWithType: RequestHandler = async (req, res, next) => {
   try {
     const ingredients = await ingredientsRepository.readAllWithType();
-    res.json(ingredients);
+    
+    // Ensure we always return an array, even if empty
+    res.json(ingredients || []);
   } catch (err) {
-    next(err);
+    console.error('Error in browseWithType:', err);
+    
+    // Return empty array on error to prevent client crashes
+    res.status(500).json({
+      error: 'Failed to fetch ingredients',
+      data: []
+    });
   }
 };
 

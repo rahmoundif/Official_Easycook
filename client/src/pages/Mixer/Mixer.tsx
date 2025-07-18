@@ -50,14 +50,30 @@ function Mixer() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/ingredients/by-type`)
       .then((res) => res.json())
-      .then(setIngredients);
+      .then((data) => {
+        // Ensure we always have an array
+        if (Array.isArray(data)) {
+          setIngredients(data);
+        } else if (data && Array.isArray(data.data)) {
+          setIngredients(data.data);
+        } else {
+          console.warn('Invalid ingredients data received:', data);
+          setIngredients([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch ingredients:', error);
+        setIngredients([]);
+      });
   }, []);
 
-  // Regroupe les ingré par type_name
+  // Regroupe les ingré par type_name - with safety check
   const grouped: { [type: string]: Ingredient[] } = {};
-  for (const ing of ingredients) {
-    if (!grouped[ing.type_name]) grouped[ing.type_name] = [];
-    grouped[ing.type_name].push(ing);
+  if (Array.isArray(ingredients)) {
+    for (const ing of ingredients) {
+      if (!grouped[ing.type_name]) grouped[ing.type_name] = [];
+      grouped[ing.type_name].push(ing);
+    }
   }
 
   const toggleIngredient = (name: string) => {
