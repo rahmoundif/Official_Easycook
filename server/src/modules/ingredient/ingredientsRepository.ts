@@ -35,20 +35,26 @@ class ingredientRepository {
   }
 
   async readAllWithType() {
-    const result = await databaseClient.query<TypeIngredient>(
-      `
-    SELECT
-      i.id AS ingredient_id,
-      i.name AS ingredient_name,
-      i.picture AS ingredient_picture,
-      t.id AS type_id,
-      t.name AS type_name
-    FROM ingredient i
-    JOIN type_ingredient t ON i.id_type_ingredient = t.id
-    ORDER BY t.id, i.name
-    `,
-    );
-    return result.rows;
+    try {
+      const result = await databaseClient.query<TypeIngredient>(
+        `
+      SELECT
+        i.id AS ingredient_id,
+        i.name AS ingredient_name,
+        i.picture AS ingredient_picture,
+        t.id AS type_id,
+        t.name AS type_name
+      FROM ingredient i
+      JOIN type_ingredient t ON i.id_type_ingredient = t.id
+      ORDER BY t.id, i.name
+      `,
+      );
+      
+      return result.rows || [];
+    } catch (error) {
+      console.error('Database error in readAllWithType:', error);
+      return []; // Return empty array on database error
+    }
   }
 }
 

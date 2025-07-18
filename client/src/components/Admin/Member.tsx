@@ -17,7 +17,7 @@ function MemberManage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}admin/${member.id}`,
+        `${import.meta.env.VITE_API_URL}/admin/${member.id}`,
         {
           method: "PATCH",
           headers: {

@@ -1,21 +1,16 @@
 // Get variables from .env file for database connection
-const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-
-// Create a connection pool to the PostgreSQL database
 import { Pool } from "pg";
 
+// Use DATABASE_URL for Supabase Pooler connection (Vercel optimized)
 const client = new Pool({
-  host: DB_HOST,
-  port: Number.parseInt(DB_PORT as string),
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
-  // SSL configuration for Supabase (required for production)
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  // Serverless optimizations
-  max: 10, // Maximum number of connections in the pool
-  idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
-  connectionTimeoutMillis: 10000, // Timeout for new connections
+  connectionString: process.env.DATABASE_URL,
+  // SSL configuration for Supabase (always required)
+  ssl: { rejectUnauthorized: false },
+  // Serverless optimizations for Vercel
+  max: 1, // Reduced for serverless (Vercel functions are stateless)
+  idleTimeoutMillis: 0, // No idle connections in serverless
+  connectionTimeoutMillis: 10000, // 10 second timeout
+  allowExitOnIdle: true, // Allow process to exit when no connections
 });
 
 // Ready to export
