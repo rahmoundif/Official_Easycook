@@ -27,14 +27,17 @@ app.use((req, res, next) => {
 
 import cors from "cors";
 
-// Simple CORS configuration for Vercel
+// CORS configuration using environment variables
+const allowedOrigins: string[] = [
+  process.env.CLIENT_URL || 'https://officialeasycook.vercel.app', // Production client URL from .env
+  'http://localhost:3000', // Local development
+  'http://localhost:5173'  // Vite dev server
+];
+
 app.use(cors({
-  origin: [
-    'https://officialeasycook.vercel.app',
-    'http://localhost:3000'
-  ],
+  origin: allowedOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['USE', 'GET', 'POST','PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

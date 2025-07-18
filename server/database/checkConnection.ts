@@ -4,7 +4,8 @@ import client from "./client";
 client
   .connect()
   .then((connection) => {
-    console.info(`Using database ${process.env.DB_NAME}`);
+    console.info(`Database connected successfully via Supabase Pooler`);
+    console.info(`Connection string: ${process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'Supabase'}`);
 
     connection.release();
   })
@@ -12,7 +13,7 @@ client
     console.warn(
       "Warning:",
       "Failed to establish a database connection.",
-      "Please check your database credentials in the .env file if you need a database access.",
+      "Please check your DATABASE_URL in the .env file for Supabase connection.",
     );
     console.warn(error.message);
   });
