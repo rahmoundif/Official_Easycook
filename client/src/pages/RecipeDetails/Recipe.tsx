@@ -75,7 +75,7 @@ function Recettes() {
     if (selectedRegime) params.append("diet", selectedRegime);
     if (selectedDifficulte) params.append("difficulty", selectedDifficulte);
 
-    fetch(`${import.meta.env.VITE_API_URL}recipe?${params.toString()}`)
+    fetch(`${import.meta.env.VITE_API_URL}/recipe?${params.toString()}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipeToMap(data);
