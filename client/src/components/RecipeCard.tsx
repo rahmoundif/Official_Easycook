@@ -17,20 +17,11 @@ interface RecipeCardProps {
   onClick?: () => void;
 }
 
-const CARD_WIDTH = "340px";
-const CARD_HEIGHT = "480px";
 const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => (
   <button
     type="button"
-    className="group relative flex flex-col bg-white rounded-3xl  border-2 border-[#dd682d] overflow-hidden transition-transform hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(221,104,45,0.25)]"
-    style={{
-      minWidth: CARD_WIDTH,
-      maxWidth: CARD_WIDTH,
-      minHeight: CARD_HEIGHT,
-      maxHeight: CARD_HEIGHT,
-      width: CARD_WIDTH,
-      height: CARD_HEIGHT,
-    }}
+    className="group relative flex flex-col bg-white rounded-3xl border-2 border-[#dd682d] overflow-hidden transition-transform hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(221,104,45,0.25)] w-full max-w-xs h-[480px] mx-auto"
+
     onClick={onClick}
     tabIndex={onClick ? 0 : undefined}
     role={onClick ? "button" : undefined}

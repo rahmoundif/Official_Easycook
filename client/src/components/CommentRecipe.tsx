@@ -56,14 +56,14 @@ function CommentRecipe({ comments }: { comments: CommentInterface[] }) {
   }
 
   return (
-    <section className="w-full mx-4">
+    <section className="w-full mx-4 ">
       <h4 className="text-xl text-secondary text-center">Commentaires</h4>
       <ul className="text-secondary">
         {comments
           .filter((comment) => comment.text)
           .map((comment) => (
             <li
-              className="bg-primary/20 p-2 rounded  my-4"
+              className="bg-primary/80 -ml-8 md:ml-0  max-w-90 p-2  rounded  my-4"
               key={`${comment.member}-${comment.text}`}
             >
               {`${comment.member}: ${comment.text}`}
@@ -72,21 +72,21 @@ function CommentRecipe({ comments }: { comments: CommentInterface[] }) {
       </ul>
       <form
         onSubmit={(e) => handleSubmitComment(e)}
-        className="flex flex-col text-secondary "
+        className="flex-col text-secondary "
       >
         <textarea
           onChange={(e) => setCommentText(e.target.value)}
           style={{ resize: "none" }}
           maxLength={100}
           minLength={5}
-          className="w-full p-2 border rounded"
+          className="w-70 md:w-xl p-2 border rounded"
           placeholder="Ajouter un commentaire..."
           rows={3}
         />
 
         <button
           type="submit"
-          className="mt-2 bg-primary text-white px-4 py-2 rounded-full w-28 cursor-pointer "
+          className="mt-2 bg-primary flex justify-center mx-auto text-white px-4 py-2 rounded-full w-28 cursor-pointer "
         >
           Envoyer
         </button>
