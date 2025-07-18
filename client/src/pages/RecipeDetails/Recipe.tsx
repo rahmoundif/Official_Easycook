@@ -35,7 +35,7 @@ function Recettes() {
   // Fonction pour effectuer une recherche par mot-clé
   const handleSearch = useCallback(() => {
     setRecipeToMap([]); // Vide les recettes pendant le chargement
-    fetch(`${import.meta.env.VITE_API_URL}/api/recipe/search/${searchWord}`)
+    fetch(`${import.meta.env.VITE_API_URL}/recipe/search/${searchWord}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipeToMap(data); // Met à jour les recettes avec le résultat de la recherche
@@ -44,7 +44,7 @@ function Recettes() {
 
   // Fonction pour charger toutes les recettes (sans filtre)
   const handleAll = useCallback(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/recipe`)
+    fetch(`${import.meta.env.VITE_API_URL}/recipe`)
       .then((response) => response.json())
       .then((data) => {
         setRecipeToMap(data);
@@ -75,7 +75,7 @@ function Recettes() {
     if (selectedRegime) params.append("diet", selectedRegime);
     if (selectedDifficulte) params.append("difficulty", selectedDifficulte);
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/recipe?${params.toString()}`)
+    fetch(`${import.meta.env.VITE_API_URL}recipe?${params.toString()}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipeToMap(data);

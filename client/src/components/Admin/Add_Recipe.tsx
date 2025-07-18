@@ -43,27 +43,27 @@ function CreateRecipe() {
   const [isUstensilsOpen, setIsUstensilsOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ingredient`)
+    fetch(`${import.meta.env.VITE_API_URL}/ingredient`)
       .then((res) => res.json())
       .then((data) => setIngredients(data))
       .catch(() => {});
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/category`)
+    fetch(`${import.meta.env.VITE_API_URL}/category`)
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch(() => {});
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/diet`)
+    fetch(`${import.meta.env.VITE_API_URL}/diet`)
       .then((res) => res.json())
       .then((data) => setDiets(data))
       .catch(() => {});
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/unity`)
+    fetch(`${import.meta.env.VITE_API_URL}/unity`)
       .then((res) => res.json())
       .then((data) => setUnity(data))
       .catch(() => {});
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/ustensil`)
+    fetch(`${import.meta.env.VITE_API_URL}/ustensil`)
       .then((res) => res.json())
       .then((data) => setUstensils(data))
       .catch(() => {});
@@ -120,7 +120,7 @@ function CreateRecipe() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/admin/recipe`,
+      `${import.meta.env.VITE_API_URL}/admin/recipe`,
       {
         method: "POST",
         headers: {
@@ -146,7 +146,7 @@ function CreateRecipe() {
 
     // Ajout des ustensiles liés à la recette
     if (recipeId && selectedUstensils.length > 0) {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/ustensil/${recipeId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/ustensil/${recipeId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ustensils: selectedUstensils }),

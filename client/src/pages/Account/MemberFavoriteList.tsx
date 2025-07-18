@@ -17,7 +17,7 @@ function MemberFavoriteList() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/member/${idUserOnline}/favorite`,
+      `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/favorite`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +40,7 @@ function MemberFavoriteList() {
   }, [idUserOnline]);
 
   function handleToggleFavorite(recipeId: number, current: boolean) {
-    fetch(`${import.meta.env.VITE_API_URL}/api/favorite/recipe`, {
+    fetch(`${import.meta.env.VITE_API_URL}/favorite/recipe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,3 +1,5 @@
 node_modules*
 coverage
 .env
+VERCEL_DEPLOYMENT.md
+.env.production
