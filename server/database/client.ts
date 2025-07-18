@@ -12,6 +12,10 @@ const client = new Pool({
   database: DB_NAME,
   // SSL configuration for Supabase (required for production)
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  // Serverless optimizations
+  max: 10, // Maximum number of connections in the pool
+  idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+  connectionTimeoutMillis: 10000, // Timeout for new connections
 });
 
 // Ready to export
