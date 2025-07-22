@@ -4,7 +4,7 @@ import express from "express";
 
 const app = express();
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.get("/", (req, res) => res.send("I guess it's working right ?"));
 
 // Debug middleware to log all requests
 app.use((req, res, next) => {
@@ -29,7 +29,7 @@ import cors from "cors";
 
 // CORS configuration using environment variables
 const allowedOrigins: string[] = [
-  process.env.CLIENT_URL || 'https://officialeasycook.vercel.app', // Production client URL venant du .env
+  process.env.CLIENT_URL || 'https://official-easycook.vercel.app', // Production client URL venant du .env
   'http://localhost:3000', // Local 
 ];
 
