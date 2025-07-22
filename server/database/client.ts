@@ -6,11 +6,6 @@ const client = new Pool({
   connectionString: process.env.DATABASE_URL,
   // SSL configuration for Supabase (always required)
   ssl: { rejectUnauthorized: false },
-  // Serverless optimizations for Vercel
-  max: 1, // Reduced for serverless (Vercel functions are stateless)
-  idleTimeoutMillis: 0, // No idle connections in serverless
-  connectionTimeoutMillis: 10000, // 10 second timeout
-  allowExitOnIdle: true, // Allow process to exit when no connections
 });
 
 // Ready to export
