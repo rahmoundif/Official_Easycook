@@ -29,7 +29,7 @@ import cors from "cors";
 
 // CORS configuration using environment variables
 const allowedOrigins: string[] = [
-  process.env.CLIENT_URL || 'https://official-easycook.vercel.app', // Production client URL venant du .env
+  process.env.CLIENT_URL || // Production client URL venant du .env
   'http://localhost:3000', // Local 
 ];
 
