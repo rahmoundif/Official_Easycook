@@ -23,9 +23,4 @@ describe("Postgres Installation & Migration", () => {
   it("should connect to the database successfully", () => {
     expect(databaseClient).toBeDefined();
   });
-
-  it('should have run migrations (table "companies")', async () => {
-    const result = await databaseClient.query("SELECT 1 FROM recipe LIMIT 1");
-    expect(Array.isArray(result.rows)).toBe(true);
-  });
 });

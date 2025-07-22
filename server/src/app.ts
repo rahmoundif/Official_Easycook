@@ -29,15 +29,14 @@ import cors from "cors";
 
 // CORS configuration using environment variables
 const allowedOrigins: string[] = [
-  process.env.CLIENT_URL || 'https://officialeasycook.vercel.app', // Production client URL from .env
-  'http://localhost:3000', // Local development
-  'http://localhost:5173'  // Vite dev server
+  process.env.CLIENT_URL || 'https://officialeasycook.vercel.app', // Production client URL venant du .env
+  'http://localhost:3000', // Local 
 ];
 
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
-  methods: ['USE', 'GET', 'POST','PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['USE', 'GET', 'POST','PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

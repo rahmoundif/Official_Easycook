@@ -42,7 +42,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer toutes les unités", async () => {
     const rows: TypeUnity[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/unity");
+    const res = await supertest(app).get("/unity");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -50,7 +50,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer toute les Diet", async () => {
     const rows: TypeDiet[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/diet");
+    const res = await supertest(app).get("/diet");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -58,7 +58,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer toute les categories", async () => {
     const rows: TypeCategory[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/category");
+    const res = await supertest(app).get("/category");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -66,7 +66,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer recettes aléatoire", async () => {
     const rows: TypeRecipe[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/random");
+    const res = await supertest(app).get("/recipe/random");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -74,7 +74,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer toutes les recettes", async () => {
     const rows: TypeRecipe[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe");
+    const res = await supertest(app).get("/recipe");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -82,7 +82,7 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer le détail d’une recette", async () => {
     const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/detail/17");
+    const res = await supertest(app).get("/recipe/detail/17");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows[0]);
   });
@@ -90,7 +90,7 @@ describe("GET Routes publique", () => {
   it("Devrait faire la recherche par mot-clé", async () => {
     const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/search/17");
+    const res = await supertest(app).get("/recipe/search/17");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -98,7 +98,7 @@ describe("GET Routes publique", () => {
   it("Devrait filtrer par catégorie", async () => {
     const rows: TypeRecipe[] = [{ id: 2, name: "Petit déjeuner", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/category/2");
+    const res = await supertest(app).get("/recipe/category/2");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -106,7 +106,7 @@ describe("GET Routes publique", () => {
   it("Devrait filtrer par régime", async () => {
     const rows: TypeRecipe[] = [{ id: 4, name: "Vegan", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/diet/4");
+    const res = await supertest(app).get("/recipe/diet/4");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -114,7 +114,7 @@ describe("GET Routes publique", () => {
   it("Devrait filtrer par temps", async () => {
     const rows: TypeRecipe[] = [{ id: 17, name: "Crêpes Rapides", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/time/17");
+    const res = await supertest(app).get("/recipe/time/17");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -122,7 +122,7 @@ describe("GET Routes publique", () => {
   it("Devrait filtrer par difficulté", async () => {
     const rows: TypeRecipe[] = [{ id: 5, name: "Riz", rate: 0 }];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/recipe/difficulty/5");
+    const res = await supertest(app).get("/recipe/difficulty/5");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
@@ -130,13 +130,13 @@ describe("GET Routes publique", () => {
   it("Devrait nous montrer les catégories pour l’accueil", async () => {
     const rows: TypeRecipe[] = [];
     mockQuery(rows);
-    const res = await supertest(app).get("/api/accueil/category");
+    const res = await supertest(app).get("/accueil/category");
     expect(res.status).toBe(200);
     expect(res.body).toStrictEqual(rows);
   });
 });
 
-describe("PATCH /api/member", () => {
+describe("PATCH /member", () => {
   it("Devrait modifier le profile du Membre", async () => {
     const hashedPassword = bcrypt.hashSync("123", 8);
 
@@ -168,7 +168,7 @@ describe("PATCH /api/member", () => {
     } as QueryResult<Member>);
 
     const res = await supertest(app)
-      .patch("/api/member")
+      .patch("/member")
       .set("Authorization", token)
       .send({
         id: 192,
@@ -182,7 +182,7 @@ describe("PATCH /api/member", () => {
   });
 });
 
-describe("DELETE /api/admin/208", () => {
+describe("DELETE /admin/208", () => {
   it("Devrait Suprimer un Compte externe en temps qu'Admin", async () => {
     const testMember = {
       id: 192,
@@ -200,13 +200,13 @@ describe("DELETE /api/admin/208", () => {
     mockQuery([testMember]);
 
     const res = await supertest(app)
-      .delete("/api/admin/208")
+      .delete("/admin/208")
       .set("Authorization", token);
     expect(res.status).toBe(200);
   });
 });
 
-describe("POST /api/signup", () => {
+describe("POST /signup", () => {
   it("Devrait créer un compte Membre", async () => {
     const testMember = {
       name: "Alice",
@@ -226,7 +226,7 @@ describe("POST /api/signup", () => {
       },
     ]);
 
-    const res = await supertest(app).post("/api/signup").send(testMember);
+    const res = await supertest(app).post("/signup").send(testMember);
     expect(res.status).toBe(201);
     expect(res.body.userId).toBe(999);
     expect(res.body.isAdmin).toBe(false);
