@@ -51,13 +51,6 @@ function MemberAccountPage() {
           setProfile(data);
         }
       })
-      .catch((err) => {
-        console.error("Erreur lors de la récupération du profil :", err?.name, err?.message);
-        // If it's a network error and we have a token, it might be invalid
-        if (err.message.includes("Failed to fetch")) {
-          console.error("Erreur réseau - le token pourrait être invalide");
-        }
-      });
   }, [idUserOnline, isConnected]);
 
   return (
