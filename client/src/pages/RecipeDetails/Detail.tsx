@@ -89,6 +89,20 @@ function DetailsRecipe() {
   // -----------------------
   // Fonctions utilitaires
   // -----------------------
+
+  // fonctions qui refresh le rating et les comments
+  const refreshCommentsAndRatings = () => {
+    fetch(`${import.meta.env.VITE_API_URL}/rate/recipe/${recipeId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setRate(data.rate);
+        setComments(data.comments);
+      })
+      .catch((error) => {
+        console.error("Erreur rafraichissement du commentaire:", error);
+      });
+  };
+
   function handleLess() {
     if (numberPersons > 1) {
       setNumberPersons(numberPersons - 1);
@@ -120,6 +134,8 @@ function DetailsRecipe() {
           toast.success("Note ajoutée avec succès", {
             style: { background: "#452a00", color: "#fde9cc" },
           });
+          // mise a jour apres refresh
+          refreshCommentsAndRatings();
         } else {
           toast.error("Erreur lors de l'ajout de la note", {
             style: { background: "#452a00", color: "#fde9cc" },
@@ -337,7 +353,11 @@ function DetailsRecipe() {
           <RatingStars onRate={handleUserRate} rating={rate} />
         </div>
         <div className="rounded-xl p-3 mt-2">
-          <CommentRecipe comments={comments} recipeId={recipeId} />
+          <CommentRecipe
+            comments={comments}
+            recipeId={recipeId}
+            onCommentAdded={refreshCommentsAndRatings}
+          />
         </div>
       </section>
     </section>
@@ -484,7 +504,11 @@ function DetailsRecipe() {
               <RatingStars onRate={handleUserRate} rating={rate} />
             </div>
             <div className="rounded-xl p-3 mt-2">
-              <CommentRecipe comments={comments} recipeId={recipeId} />
+              <CommentRecipe
+                comments={comments}
+                recipeId={recipeId}
+                onCommentAdded={refreshCommentsAndRatings}
+              />
             </div>
           </section>
         </div>

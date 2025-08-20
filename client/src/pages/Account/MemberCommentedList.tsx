@@ -9,28 +9,55 @@ interface CommentedRecipeType {
 }
 
 function MemberCommentedList() {
-  const { idUserOnline } = useUser();
+  const { idUserOnline, isConnected } = useUser();
   const [commented, setCommented] = useState<CommentedRecipeType[]>([]);
 
   useEffect(() => {
+    if (!isConnected || !idUserOnline) {
+      console.log("User not connected or no ID available");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.log("No token available");
+      return;
+    }
+
     fetch(
       `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/comments`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token") || ""}`,
+          Authorization: token,
         },
       },
     )
       .then((response) => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Token is invalid, clear it
+            localStorage.removeItem("token");
+            console.error("Token invalide, veuillez vous reconnecter");
+            return;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
         return response.json();
       })
-      .then(setCommented)
+      .then((data) => {
+        if (data) {
+          setCommented(data);
+        }
+      })
       .catch((err) => {
         console.error("Erreur lors de la récupération des commentaires :", err);
+        // If it's a network error and we have a token, it might be invalid
+        if (err.message.includes("Failed to fetch")) {
+          console.error("Erreur réseau - le token pourrait être invalide");
+        }
       });
-  }, [idUserOnline]);
+  }, [idUserOnline, isConnected]);
 
   return (
     <section className=" flex flex-col mt-5 ml-3 md:justify-around md:flex-wrap">

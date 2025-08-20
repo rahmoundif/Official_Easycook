@@ -10,28 +10,55 @@ interface accountPageType {
 }
 
 function MemberAccountPage() {
-  const { idUserOnline, isAdmin } = useUser();
+  const { idUserOnline, isAdmin, isConnected } = useUser();
   const [profile, setProfile] = useState<accountPageType[]>([]);
 
   useEffect(() => {
+    // Don't fetch if user is not connected or no user ID
+    if (!isConnected || !idUserOnline) {
+      console.log("User not connected or no ID available");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.log("No token available");
+      return;
+    }
+
     fetch(
       `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/profile`,
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token") || ""}`,
+          Authorization: token,
         },
       },
     )
       .then((response) => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Token is invalid, clear it
+            localStorage.removeItem("token");
+            console.error("Token invalide, veuillez vous reconnecter");
+            return;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
         return response.json();
       })
-      .then(setProfile)
+      .then((data) => {
+        if (data) {
+          setProfile(data);
+        }
+      })
       .catch((err) => {
-        console.error("Erreur lors de la récupération des commentaires :", err);
+        console.error("Erreur lors de la récupération du profil :", err?.name, err?.message);
+        // If it's a network error and we have a token, it might be invalid
+        if (err.message.includes("Failed to fetch")) {
+          console.error("Erreur réseau - le token pourrait être invalide");
+        }
       });
-  }, [idUserOnline]);
+  }, [idUserOnline, isConnected]);
 
   return (
     <section className="mb-6 bg-[#f9e7cf] shadow-lg rounded-2xl px-2 border-2 border-[#e6d9be] min-w-[260px] max-w-xs">

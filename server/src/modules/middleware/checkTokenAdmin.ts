@@ -6,12 +6,17 @@ interface JWTPayload {
 }
 
 const checkTokenAdmin: RequestHandler = (req, res, next) => {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
   const idToDelete = req.query.idToDelete;
-  if (!token) {
+  if (!authHeader) {
     res.status(401).send({ message: "Unauthorized" });
     return;
   }
+
+  // Accept either raw token or 'Bearer <token>' format
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : authHeader;
 
   jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
     if (err) {

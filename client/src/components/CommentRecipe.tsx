@@ -11,9 +11,10 @@ interface CommentInterface {
 interface CommentRecipeProps {
   comments: CommentInterface[];
   recipeId: number;
+  onCommentAdded?: () => void; // pour le refresh
 }
 
-function CommentRecipe({ comments, recipeId }: CommentRecipeProps) {
+function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProps) {
   const navigate = useNavigate();
   const [commentText, setCommentText] = useState<string>("");
   const { isConnected, idUserOnline } = useUser();
@@ -43,19 +44,30 @@ function CommentRecipe({ comments, recipeId }: CommentRecipeProps) {
           Authorization: `${localStorage.getItem("token") || ""}`,
         },
         body: JSON.stringify(commentData),
-      }).then((response) => {
-        if (response.ok) {
-          toast.success("Commentaire ajouté avec succès", {
-            style: { background: "#452a00", color: "#fde9cc" },
-          });
-          window.location.reload();
-        } else {
-          // Handle error
+      })
+        .then((response) => {
+          if (response.ok) {
+            toast.success("Commentaire ajouté avec succès", {
+              style: { background: "#452a00", color: "#fde9cc" },
+            });
+            setCommentText(""); // vide la partie commentaire
+            // Refresh seulement la zone commentaire
+            if (onCommentAdded) {
+              onCommentAdded();
+            }
+          } else {
+            // Handle error
+            toast.error("Erreur lors de l'ajout du commentaire", {
+              style: { background: "#452a00", color: "#fde9cc" },
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding comment:", error);
           toast.error("Erreur lors de l'ajout du commentaire", {
             style: { background: "#452a00", color: "#fde9cc" },
           });
-        }
-      });
+        });
     }
   }
 

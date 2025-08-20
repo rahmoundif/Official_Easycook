@@ -8,6 +8,12 @@ const client = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
+// Prevent process crash on transient connection errors
+client.on("error", (err) => {
+  // Common transient error: {:shutdown, :client_termination}
+  console.error("Postgres pool error:", err?.message || err);
+});
+
 // Ready to export
 export default client;
 

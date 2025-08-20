@@ -72,8 +72,8 @@ export function UserProvider({ children }: ContextInterface) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
- 
+
+
     if (!token) {
       setIsConnected(false);
       setIdUserOnline(null);
@@ -86,7 +86,7 @@ export function UserProvider({ children }: ContextInterface) {
     fetch(`${import.meta.env.VITE_API_URL}/member`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: `${localStorage.getItem("token") || ""}`,
       },
     })
       .then((response) => {
@@ -127,7 +127,7 @@ export function UserProvider({ children }: ContextInterface) {
       const data = await response.json();
       localStorage.setItem("token", data.token); // stocké en string
       setIsConnected(true);
-      setIsAdmin(data.admin);
+      setIsAdmin(data.isAdmin ?? data.admin);
       setIdUserOnline(data.userId);
 
       setUserOnline(data);

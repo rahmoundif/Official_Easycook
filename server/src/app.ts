@@ -28,17 +28,22 @@ app.use((req, res, next) => {
 import cors from "cors";
 
 // CORS configuration using environment variables
-const allowedOrigins: string[] = [
-  process.env.CLIENT_URL || // Production client URL venant du .env
-  'http://localhost:3000', // Local 
-];
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:3000",
+  "http://localhost:3001",
+].filter(Boolean) as string[];
 
-app.use(cors({
+const corsOptions: cors.CorsOptions = {
   origin: allowedOrigins,
   credentials: true,
-  methods: ['USE', 'GET', 'POST','PATCH', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+// Ensure preflight requests are handled
+app.options("*", cors(corsOptions));
 
 /* ************************************************************************* */
 

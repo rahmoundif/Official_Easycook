@@ -208,7 +208,7 @@ function Edit_Recipe({
         {/* === BARRE DE TITRE STICKY === */}
         <div
           className="sticky top-0 z-10 bg-primary/90 text-white flex justify-between items-center px-6 py-4 rounded-t-2xl shadow"
-          // Fond orange vif, texte blanc, arrondi haut, ombre
+        // Fond orange vif, texte blanc, arrondi haut, ombre
         >
           <h2 className="text-xl font-bold tracking-wide">
             Modifier la recette
@@ -231,7 +231,7 @@ function Edit_Recipe({
           {/* === SECTION INFORMATIONS PRINCIPALES === */}
           <section
             className="bg-primary/10 border border-primary/30 rounded-2xl shadow-lg p-6 m-6 space-y-6"
-            // Fond légèrement orangé, bordure orange claire, ombre, arrondi, padding
+          // Fond légèrement orangé, bordure orange claire, ombre, arrondi, padding
           >
             <h3 className="font-bold text-lg text-primary mb-4">
               Informations principales
@@ -381,11 +381,10 @@ function Edit_Recipe({
                   <div
                     key={ingredient.id}
                     className={`flex flex-col items-start  gap-2 p-3 rounded-2xl shadow-sm border-2 transition
-                                            ${
-                                              isSelected
-                                                ? "border-primary bg-white"
-                                                : "border-gray-200 bg-gray-50"
-                                            }`}
+                                            ${isSelected
+                        ? "border-primary bg-white"
+                        : "border-gray-200 bg-gray-50"
+                      }`}
                   >
                     {/* Checkbox + label */}
                     <div className="flex items-center gap-2 w-full">
@@ -468,11 +467,10 @@ function Edit_Recipe({
                 {allUstensils.map((ustensil) => (
                   <div
                     key={ustensil.id}
-                    className={`flex items-center gap-2 bg-white rounded-lg p-2 shadow-sm border transition ${
-                      selectedUstensils.includes(ustensil.id)
-                        ? "border-primary/60"
-                        : "border-transparent"
-                    }`}
+                    className={`flex items-center gap-2 bg-white rounded-lg p-2 shadow-sm border transition ${selectedUstensils.includes(ustensil.id)
+                      ? "border-primary/60"
+                      : "border-transparent"
+                      }`}
                   >
                     <input
                       type="checkbox"
