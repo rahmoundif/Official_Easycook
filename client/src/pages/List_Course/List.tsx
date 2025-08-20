@@ -45,7 +45,6 @@ function List() {
         .then((data) => {
           data.numberPersons = item.numberPersons;
           recipeToMap.push(data);
-          //console.log(recipeToMap);
           setRecipe(recipeToMap);
         });
 
@@ -58,7 +57,6 @@ function List() {
             data[i].numberPersons = item.numberPersons;
           }
           ingredientsToMap.push(data);
-          console.log(ingredientsToMap);
           const flatIngredients = ingredientsToMap.flat();
           const newIngredients: TypeIngredient[] = Object.values(
             flatIngredients.reduce(
@@ -82,10 +80,8 @@ function List() {
   }, []);
 
   async function handleValidList() {
-    //console.log("currentList", currentList);
     if (currentList.length > 0 && isConnected) {
       const token = localStorage.getItem("token");
-      console.log(currentList);
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/member/${userOnline?.id}/list`,
         {
