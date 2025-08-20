@@ -18,22 +18,8 @@ interface RecipeCardProps {
 }
 
 const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => (
-  <button
-    type="button"
+  <section
     className="group relative flex flex-col bg-white rounded-3xl border-2 border-[#dd682d] overflow-hidden transition-transform hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(221,104,45,0.25)] w-full max-w-xs h-[480px] mx-auto"
-
-    onClick={onClick}
-    tabIndex={onClick ? 0 : undefined}
-    role={onClick ? "button" : undefined}
-    onKeyDown={
-      onClick
-        ? (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              onClick();
-            }
-          }
-        : undefined
-    }
   >
     {/* Image large en haut avec overlay */}
     <div className="relative w-full h-48 overflow-hidden flex-shrink-0">
@@ -98,7 +84,7 @@ const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => (
     </div>
     {/* Effet hover : overlay coloré */}
     <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl" />
-  </button>
+  </section>
 );
 
 export default RecipeCard;

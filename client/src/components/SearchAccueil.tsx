@@ -12,7 +12,7 @@ function SearchAccueil() {
 
   return (
      <section className="flex flex-col absolute top-20 md:top-30 left-1/2 transform -translate-x-1/2 z-1 text-white items-center justify-center">
-      <article className="relative z-10 lg:flex  text-3xl md:text-4xl lg:text-6xl md:font-semibold font-bold text-white text-center drop-shadow-lg mb-2 animate-fade-in mb-5">
+      <article className="relative z-10 lg:flex  text-3xl md:text-4xl lg:text-6xl md:font-semibold font-bold text-white text-center drop-shadow-lg animate-fade-in mb-5">
         On mange quoi
         <br />
         cette semaine&nbsp;?

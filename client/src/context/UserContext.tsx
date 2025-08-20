@@ -61,7 +61,7 @@ export function UserProvider({ children }: ContextInterface) {
   //boulean easterEgg
   const [isEasterEgg, setIsEasterEgg] = useState(false);
 
-  // Verification du Token --------------------------------------
+  // Verification du Token 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token && isConnected) {
@@ -69,31 +69,46 @@ export function UserProvider({ children }: ContextInterface) {
     }
   }, [isConnected]);
 
-  ////////////Fait pas attention à ça////////////////////
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!isConnected) {
-      fetch(`${import.meta.env.VITE_API_URL}/member`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token") || "",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message !== " Unauthorized") {
-            setUserOnline(data);
-            setIsConnected(true);
-            setIdUserOnline(data.id);
-            setIsAdmin(data.admin);
-          } else {
-            setIsConnected(false);
-            setIdUserOnline(null);
-            setUserOnline(undefined);
-          }
-        });
+    const token = localStorage.getItem("token");
+    
+ 
+    if (!token) {
+      setIsConnected(false);
+      setIdUserOnline(null);
+      setUserOnline(undefined);
+      setIsAdmin(false);
+      return;
     }
+
+
+    fetch(`${import.meta.env.VITE_API_URL}/member`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw new Error('Erreur de verification du token');
+      })
+      .then((data) => {
+        setUserOnline(data);
+        setIsConnected(true);
+        setIdUserOnline(data.id);
+        setIsAdmin(data.admin);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        setIsConnected(false);
+        setIdUserOnline(null);
+        setUserOnline(undefined);
+        setIsAdmin(false);
+      });
   }, []);
 
   // Creation du Token -----------------------------------------
