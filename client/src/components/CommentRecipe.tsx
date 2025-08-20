@@ -8,7 +8,12 @@ interface CommentInterface {
   member: string;
 }
 
-function CommentRecipe({ comments }: { comments: CommentInterface[] }) {
+interface CommentRecipeProps {
+  comments: CommentInterface[];
+  recipeId: number;
+}
+
+function CommentRecipe({ comments, recipeId }: CommentRecipeProps) {
   const navigate = useNavigate();
   const [commentText, setCommentText] = useState<string>("");
   const { isConnected, idUserOnline } = useUser();
@@ -23,7 +28,6 @@ function CommentRecipe({ comments }: { comments: CommentInterface[] }) {
       navigate("/Compte");
     } else {
       //update or create comment with recipeId, userId
-      const recipeId = Number(localStorage.getItem("recipeId"));
       const userId = idUserOnline;
       //creer la donnée a faire passer dans la requete
       const commentData = {

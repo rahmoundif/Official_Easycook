@@ -101,7 +101,7 @@ function Mixer() {
 
   function handleRecipeId(recipeId: number) {
     localStorage.setItem("recipeId", recipeId.toString());
-    navigate("/Details");
+    navigate(`/Details/${recipeId}`);
   }
 
   function handleMixLogo() {
@@ -135,11 +135,10 @@ function Mixer() {
               <div key={type} className="mb-1">
                 <button
                   type="button"
-                  className={`w-full flex justify-between items-center text-left font-bold px-2 py-2 rounded transition-colors border-b border-[#2d1c0b]/20 ${
-                    openType === type
+                  className={`w-full flex justify-between items-center text-left font-bold px-2 py-2 rounded transition-colors border-b border-[#2d1c0b]/20 ${openType === type
                       ? "bg-[#f3d7b7] text-[#2d1c0b]"
                       : "text-[#2d1c0b] hover:bg-[#f3d7b7]"
-                  }`}
+                    }`}
                   onClick={() => setOpenType(openType === type ? null : type)}
                 >
                   <span>{type}</span>
@@ -170,11 +169,10 @@ function Mixer() {
                         />
                         <label
                           htmlFor={`ing-${ing.ingredient_id}`}
-                          className={`cursor-pointer select-none transition-colors text-[15px] ${
-                            selected.includes(ing.ingredient_name)
+                          className={`cursor-pointer select-none transition-colors text-[15px] ${selected.includes(ing.ingredient_name)
                               ? "text-[#b98a4a] font-semibold"
                               : "text-[#2d1c0b]"
-                          }`}
+                            }`}
                         >
                           {ing.ingredient_name}
                         </label>

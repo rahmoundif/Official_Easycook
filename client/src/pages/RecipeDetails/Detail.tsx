@@ -15,7 +15,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa6";
 import { IoMdAdd } from "react-icons/io";
 import { MdModeEdit } from "react-icons/md";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
 // =======================
@@ -25,7 +25,8 @@ function DetailsRecipe() {
   // -----------------------
   // Hooks & constantes
   // -----------------------
-  const recipeId = Number(localStorage.getItem("recipeId"));
+  const { id } = useParams();
+  const recipeId = id ? Number(id) : Number(localStorage.getItem("recipeId"));
   const { isFavorite, toggleFavorite } = useHandleFavorite(recipeId, false);
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState<TypeRecipe | null>(null);
@@ -39,14 +40,29 @@ function DetailsRecipe() {
   const { isConnected, idUserOnline, isAdmin } = useUser();
   const [showEdit, setShowEdit] = useState(false);
 
+  // Check if we have a valid recipe ID, if not redirect to recipes
+  useEffect(() => {
+    if (!recipeId || isNaN(recipeId)) {
+      toast.error("Aucune recette sélectionnée");
+      navigate("/Recettes");
+      return;
+    }
+  }, [recipeId, navigate]);
+
   // -----------------------
   // Effets de chargement
   // -----------------------
   useEffect(() => {
+    if (!recipeId || isNaN(recipeId)) return;
+
     fetch(`${import.meta.env.VITE_API_URL}/recipe/detail/${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipe(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching recipe:", error);
+        toast.error("Erreur lors du chargement de la recette");
       });
     fetch(`${import.meta.env.VITE_API_URL}/ingredient/recipe/${recipeId}`)
       .then((response) => response.json())
@@ -161,7 +177,7 @@ function DetailsRecipe() {
           ingredients={ingredients}
           ustensils={ustensils}
           onClose={() => setShowEdit(false)}
-          onUpdate={() => {}}
+          onUpdate={() => { }}
         />
       )}
       {/* Image et titre */}
@@ -321,7 +337,7 @@ function DetailsRecipe() {
           <RatingStars onRate={handleUserRate} rating={rate} />
         </div>
         <div className="rounded-xl p-3 mt-2">
-          <CommentRecipe comments={comments} />
+          <CommentRecipe comments={comments} recipeId={recipeId} />
         </div>
       </section>
     </section>
@@ -468,7 +484,7 @@ function DetailsRecipe() {
               <RatingStars onRate={handleUserRate} rating={rate} />
             </div>
             <div className="rounded-xl p-3 mt-2">
-              <CommentRecipe comments={comments} />
+              <CommentRecipe comments={comments} recipeId={recipeId} />
             </div>
           </section>
         </div>
@@ -484,7 +500,7 @@ function DetailsRecipe() {
               ingredients={ingredients}
               ustensils={ustensils}
               onClose={() => setShowEdit(false)}
-              onUpdate={() => {}}
+              onUpdate={() => { }}
             />
           )}
           {/* Bouton Modifier visible uniquement pour les admins */}

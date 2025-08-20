@@ -26,11 +26,11 @@ function OurSelection() {
 
   const handleRecipeChoosed = (id: number) => {
     localStorage.setItem("recipeId", id.toString());
-    navigate("/Details");
+    navigate(`/Details/${id}`);
   };
 
   return (
-     <>
+    <>
       <div className="bg-gradient-to-br from-primary/10 to-secondary/10 lg:pt-5 pb-12 mt-18 md:mt-22 rounded-4xl shadow-2xl border-4 border-white/20 mx-5 md:mx-10">
         <section className="flex flex-row justify-center items-center gap-2 py-2 ">
           <img className="h-20 w-20" src="/cook-pointeur.png" alt="" />
