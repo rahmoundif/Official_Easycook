@@ -13,6 +13,13 @@ function generateToken() {
 export const csrfProtection: RequestHandler = (req, res, next) => {
   const method = req.method.toUpperCase();
   const isSafe = method === "GET" || method === "HEAD" || method === "OPTIONS";
+  // Allowlist endpoints that don't need CSRF (no existing authenticated session yet)
+  if (!isSafe) {
+    const path = req.path.toLowerCase();
+    if (path === "/login" || path === "/signup") {
+      return next();
+    }
+  }
 
   const cookieToken = (req as any).cookies?.[CSRF_COOKIE_NAME] as string | undefined;
 

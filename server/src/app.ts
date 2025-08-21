@@ -29,33 +29,14 @@ app.use((req, res, next) => {
 import cors from "cors";
 import { csrfProtection } from "./modules/middleware/csrf";
 
-// CORS configuration (supports multiple origins via CLIENT_URLS comma list)
-const baseOrigins = [
-  process.env.CLIENT_URLS, // comma separated list optional
+// CORS configuration using environment variables
+const allowedOrigins = [
   process.env.CLIENT_URL,
-  "http://localhost:3000",
+  "http://localhost:3000"
 ].filter(Boolean) as string[];
 
-const allowedOrigins = baseOrigins
-  .flatMap((o) => o.split(","))
-  .map((o) => o.trim())
-  .filter(Boolean);
-
-// Helper to log once for diagnostics (especially for iOS issues)
-console.log("CORS allowed origins:", allowedOrigins);
-
 const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // same-origin or mobile webview
-    if (
-      allowedOrigins.includes(origin) ||
-      /https?:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)
-    ) {
-      return callback(null, true);
-    }
-    console.warn("CORS blocked origin:", origin);
-    return callback(new Error("Not allowed by CORS"));
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
@@ -63,17 +44,8 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+// Ensure preflight requests are handled
 app.options("*", cors(corsOptions));
-
-// Lightweight debug endpoint to inspect headers & cookie presence (remove in production if not needed)
-app.get("/debug/origin", (req, res) => {
-  res.json({
-    origin: req.headers.origin,
-    referer: req.headers.referer,
-    cookiePresent: Boolean(req.headers.cookie),
-    allowedOrigins,
-  });
-});
 
 // Parse cookies for auth (HTTP-only JWT)
 app.use(cookieParser());
