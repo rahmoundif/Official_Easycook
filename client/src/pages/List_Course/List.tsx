@@ -81,15 +81,16 @@ function List() {
 
   async function handleValidList() {
     if (currentList.length > 0 && isConnected) {
-      const token = localStorage.getItem("token");
+      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/member/${userOnline?.id}/list`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${token}`,
+            ...(csrf ? { "X-CSRF-Token": csrf } : {}),
           },
+          credentials: "include",
           body: JSON.stringify({
             list: currentList,
           }),

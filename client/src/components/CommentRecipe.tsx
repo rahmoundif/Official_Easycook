@@ -19,7 +19,7 @@ function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProp
   const [commentText, setCommentText] = useState<string>("");
   const { isConnected, idUserOnline } = useUser();
 
-  function handleSubmitComment(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmitComment(e: React.FormEvent<HTMLFormElement>) {
     // Prevent default form submission
     e.preventDefault();
     if (!isConnected) {
@@ -37,12 +37,14 @@ function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProp
         userId: userId,
       };
       //fetch pour poster la donnée dans la requete
+      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       fetch(`${import.meta.env.VITE_API_URL}/member/comment/recipe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token") || ""}`,
+          ...(csrf ? { "X-CSRF-Token": csrf } : {}),
         },
+        credentials: "include",
         body: JSON.stringify(commentData),
       })
         .then((response) => {

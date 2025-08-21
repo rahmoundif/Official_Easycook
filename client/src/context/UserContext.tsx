@@ -61,49 +61,34 @@ export function UserProvider({ children }: ContextInterface) {
   //boulean easterEgg
   const [isEasterEgg, setIsEasterEgg] = useState(false);
 
-  // Verification du Token 
+  // Verification du Token (cookie-based)
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token && isConnected) {
-      setIsConnected(false);
-    }
+    if (!isConnected) return;
+    // If marked connected but server cookie missing, the next check will reset state
   }, [isConnected]);
 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-
-    if (!token) {
-      setIsConnected(false);
-      setIdUserOnline(null);
-      setUserOnline(undefined);
-      setIsAdmin(false);
-      return;
-    }
-
-
-    fetch(`${import.meta.env.VITE_API_URL}/member`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token") || ""}`,
-      },
+    fetch(`${import.meta.env.VITE_API_URL}/session`, {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
+      .then((response) => response.json())
+      .then((payload) => {
+        if (payload?.authenticated) {
+          // payload.user includes user fields without password
+          setIsConnected(true);
+          setIdUserOnline(payload.userId);
+          setIsAdmin(payload.isAdmin ?? payload.user?.admin ?? false);
+          setUserOnline(payload.user);
+        } else {
+          setIsConnected(false);
+          setIdUserOnline(null);
+          setUserOnline(undefined);
+          setIsAdmin(false);
         }
-
-        throw new Error('Erreur de verification du token');
-      })
-      .then((data) => {
-        setUserOnline(data);
-        setIsConnected(true);
-        setIdUserOnline(data.id);
-        setIsAdmin(data.admin);
       })
       .catch(() => {
-        localStorage.removeItem("token");
         setIsConnected(false);
         setIdUserOnline(null);
         setUserOnline(undefined);
@@ -115,26 +100,25 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
     const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(csrf ? { "X-CSRF-Token": csrf } : {}),
       },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("token", data.token); // stocké en string
+      // Cookie set by server; store only non-sensitive flags
       setIsConnected(true);
       setIsAdmin(data.isAdmin ?? data.admin);
       setIdUserOnline(data.userId);
-
       setUserOnline(data);
       navigate("/Compte");
-
-      // navigate("/Compte");
-      window.location.reload();
     } else {
       setIsConnected(false);
       setIdUserOnline(null);
@@ -148,16 +132,17 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmitSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const csrf2 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
     const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(csrf2 ? { "X-CSRF-Token": csrf2 } : {}),
       },
       body: JSON.stringify(user),
     });
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("token", data.token);
       setIsConnected(true);
       setIdUserOnline(data.userId);
       setUserOnline(data);
@@ -176,8 +161,13 @@ export function UserProvider({ children }: ContextInterface) {
   }
 
   // Supression Token avec bouton --------------------------------
-  function handleDisconnect() {
-    localStorage.removeItem("token");
+  async function handleDisconnect() {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch { }
     setIsConnected(false);
     setIdUserOnline(null);
     setUserOnline(undefined);
@@ -187,18 +177,15 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleUpdateMember(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    if (!token)
-      return toast.warning("Non connecté", {
-        style: { background: "#452a00", color: "#fde9cc" },
-      });
     try {
+      const csrf3 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const res = await fetch(`${import.meta.env.VITE_API_URL}/member`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          ...(csrf3 ? { "X-CSRF-Token": csrf3 } : {}),
         },
+        credentials: "include",
         body: JSON.stringify({
           name: user.name,
           email: user.email,
@@ -227,16 +214,14 @@ export function UserProvider({ children }: ContextInterface) {
   async function handleDeleteSelfAccount() {
     if (!window.confirm("Voulez-vous vraiment supprimer votre compte ?"))
       return;
-    const token = localStorage.getItem("token");
-    0;
-
-    if (!token) return;
     try {
+      const csrf4 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/member/${idUserOnline}`,
         {
           method: "DELETE",
-          headers: { Authorization: `${token}` },
+          headers: { ...(csrf4 ? { "X-CSRF-Token": csrf4 } : {}) },
+          credentials: "include",
         },
       );
       if (!res.ok) {

@@ -1,6 +1,7 @@
 // Load the express module to create a web application
 
 import express from "express";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 // For this pedagogical template, the CORS code allows CLIENT_URL in development mode (when process.env.CLIENT_URL is defined).
 
 import cors from "cors";
+import { csrfProtection } from "./modules/middleware/csrf";
 
 // CORS configuration using environment variables
 const allowedOrigins = [
@@ -38,12 +40,18 @@ const corsOptions: cors.CorsOptions = {
   origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
 };
 
 app.use(cors(corsOptions));
 // Ensure preflight requests are handled
 app.options("*", cors(corsOptions));
+
+// Parse cookies for auth (HTTP-only JWT)
+app.use(cookieParser());
+
+// CSRF protection (double-submit cookie)
+app.use(csrfProtection);
 
 /* ************************************************************************* */
 
@@ -60,9 +68,7 @@ app.options("*", cors(corsOptions));
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.text());
-app.use(express.raw());
+app.use(express.urlencoded({ extended: true }));
 
 /* ************************************************************************* */
 

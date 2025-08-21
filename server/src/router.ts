@@ -47,6 +47,13 @@ router.get("/rate/recipe/:id", recipeActions.rate); //pour afficher la note et l
 
 router.post("/signup", memberActions.add, memberActions.login); // le "Add" permet de rajouter le compte et l'action "login" de ce log directement avec un token.
 router.post("/login", memberActions.login); //l'action "login" permet de ce log directement avec un token si membre existant.
+router.get("/session", memberActions.session); // public session status endpoint without 401
+router.post("/logout", (req, res) => {
+	try {
+		(res as any).clearCookie?.("token");
+	} catch {}
+	res.status(200).json({ message: "Logged out" });
+});
 //Zone Membre ----------------------
 router.patch("/member", memberActions.editMember); // modification du profile membre
 router.get("/member/:id/profile", memberActions.readMemberProfile); // pour afficher le profile d'un membre

@@ -20,25 +20,16 @@ function MemberAccountPage() {
       return;
     }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.log("No token available");
-      return;
-    }
-
     fetch(
       `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/profile`,
       {
-        headers: {
-          Authorization: token,
-        },
+        credentials: "include",
       },
     )
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
             // Token is invalid, clear it
-            localStorage.removeItem("token");
             console.error("Token invalide, veuillez vous reconnecter");
             return;
           }

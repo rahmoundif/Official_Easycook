@@ -46,27 +46,27 @@ function CreateRecipe() {
     fetch(`${import.meta.env.VITE_API_URL}/ingredient`)
       .then((res) => res.json())
       .then((data) => setIngredients(data))
-      .catch(() => {});
+      .catch(() => { });
 
     fetch(`${import.meta.env.VITE_API_URL}/category`)
       .then((res) => res.json())
       .then((data) => setCategories(data))
-      .catch(() => {});
+      .catch(() => { });
 
     fetch(`${import.meta.env.VITE_API_URL}/diet`)
       .then((res) => res.json())
       .then((data) => setDiets(data))
-      .catch(() => {});
+      .catch(() => { });
 
     fetch(`${import.meta.env.VITE_API_URL}/unity`)
       .then((res) => res.json())
       .then((data) => setUnity(data))
-      .catch(() => {});
+      .catch(() => { });
 
     fetch(`${import.meta.env.VITE_API_URL}/ustensil`)
       .then((res) => res.json())
       .then((data) => setUstensils(data))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
   //Gère les changements dans les champs du formulaire (input, textearea, select)
   const handleChange = (
@@ -118,15 +118,16 @@ function CreateRecipe() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/admin/recipe`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          ...(csrf ? { "X-CSRF-Token": csrf } : {}),
         },
+        credentials: "include",
         body: JSON.stringify({
           recipe: {
             ...formData,

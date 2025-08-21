@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import memberRepository from "./memberRepository";
+import type { JwtPayload } from "jsonwebtoken";
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
@@ -70,7 +71,7 @@ const login: RequestHandler = async (req, res, next) => {
     if (user) {
       const isPasswordValid = bcrypt.compareSync(
         req.body.password,
-        user.password,
+        user.password
       );
 
       if (!isPasswordValid) {
@@ -80,12 +81,71 @@ const login: RequestHandler = async (req, res, next) => {
 
       const token = jwt.sign(
         { id: user.id, isAdmin: user.admin },
-        process.env.JWT_SECRET as string,
+        process.env.JWT_SECRET as string
       );
+
+      // Also set HTTP-only cookie for web clients; keep JSON body for backward compatibility
+      try {
+        (res as any).cookie?.("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+      } catch {
+        // cookie-parser may be absent in some environments; ignore silently
+      }
 
       res.status(201).json({ token, userId: user.id, isAdmin: user.admin });
     } else {
       res.status(401).send("Email ou mot de passe incorrect");
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Public endpoint to check session status without returning 401
+const session: RequestHandler = async (req, res, next) => {
+  try {
+    // Read token from cookie or Authorization header (Bearer)
+    const bearer = req.headers.authorization;
+    const cookieToken = (req as any).cookies?.token as string | undefined;
+    const headerToken = bearer?.startsWith("Bearer ")
+      ? bearer.slice(7)
+      : bearer;
+    const token = cookieToken || headerToken;
+
+    if (!token) {
+      res.status(200).json({ authenticated: false });
+      return;
+    }
+
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET as string
+      ) as JwtPayload & { id?: number; isAdmin?: boolean };
+      const id = decoded?.id as number | undefined;
+      if (!id) {
+        res.status(200).json({ authenticated: false });
+        return;
+      }
+      const user = await memberRepository.read(id);
+      if (!user) {
+        res.status(200).json({ authenticated: false });
+        return;
+      }
+      // Do not expose sensitive fields like password
+      const { password, ...safeUser } = user as any;
+      res.status(200).json({
+        authenticated: true,
+        userId: id,
+        isAdmin: !!decoded.isAdmin,
+        user: safeUser,
+      });
+    } catch {
+      res.status(200).json({ authenticated: false });
     }
   } catch (err) {
     next(err);
@@ -260,6 +320,7 @@ export default {
   read,
   add,
   login,
+  session,
   checkId,
   deleteAccount,
   deleteMemberAsAdmin,

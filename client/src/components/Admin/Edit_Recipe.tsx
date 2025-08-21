@@ -125,8 +125,7 @@ function Edit_Recipe({
 
   async function handleEditSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    if (!token || !recipeId)
+    if (!recipeId)
       return toast.error("Non connecté !", {
         style: { background: "#452a00", color: "#fde9cc" },
       });
@@ -172,14 +171,16 @@ function Edit_Recipe({
       ingredients: selectedIngredients,
       ustensils: selectedUstensils,
     };
+    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/admin/recipe/${recipeId}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          ...(csrf ? { "X-CSRF-Token": csrf } : {}),
         },
+        credentials: "include",
         body: JSON.stringify(body),
       },
     );

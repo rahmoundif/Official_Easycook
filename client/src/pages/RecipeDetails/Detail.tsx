@@ -118,30 +118,34 @@ function DetailsRecipe() {
       });
       navigate("/Compte");
     } else {
-      fetch(`${import.meta.env.VITE_API_URL}/member/rate/recipe`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token") || ""}`,
-        },
-        body: JSON.stringify({
-          recipeId,
-          userId: idUserOnline,
-          rate: rate,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          toast.success("Note ajoutée avec succès", {
-            style: { background: "#452a00", color: "#fde9cc" },
-          });
-          // mise a jour apres refresh
-          refreshCommentsAndRatings();
-        } else {
-          toast.error("Erreur lors de l'ajout de la note", {
-            style: { background: "#452a00", color: "#fde9cc" },
-          });
-        }
-      });
+      (async () => {
+        const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+        fetch(`${import.meta.env.VITE_API_URL}/member/rate/recipe`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(csrf ? { "X-CSRF-Token": csrf } : {}),
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            recipeId,
+            userId: idUserOnline,
+            rate: rate,
+          }),
+        }).then((response) => {
+          if (response.ok) {
+            toast.success("Note ajoutée avec succès", {
+              style: { background: "#452a00", color: "#fde9cc" },
+            });
+            // mise a jour apres refresh
+            refreshCommentsAndRatings();
+          } else {
+            toast.error("Erreur lors de l'ajout de la note", {
+              style: { background: "#452a00", color: "#fde9cc" },
+            });
+          }
+        });
+      })();
     }
   }
 

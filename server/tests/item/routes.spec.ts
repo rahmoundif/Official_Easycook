@@ -36,6 +36,18 @@ function mockQuery<T extends QueryResultRow>(rows: T[]) {
     .mockImplementation(async () => ({ rows }) as QueryResult<T>);
 }
 
+function headerToArray(h: unknown): string[] | undefined {
+  if (!h) return undefined;
+  if (Array.isArray(h)) return h as string[];
+  if (typeof h === "string") return [h];
+  return undefined;
+}
+
+function getCookie(setCookie: string[] | undefined, name: string) {
+  const raw = setCookie?.find((c) => c.startsWith(name + "="));
+  return raw?.match(new RegExp(`${name}=([^;]+)`))?.[1] || "";
+}
+
 // Test Time ! //
 
 describe("GET Routes publique", () => {
@@ -157,7 +169,7 @@ describe("PATCH /member", () => {
     };
 
     const token = jwt.sign(
-      { id: dbMember.id, admin: dbMember.admin },
+      { id: dbMember.id, isAdmin: dbMember.admin },
       process.env.JWT_SECRET as string,
     );
 
@@ -167,9 +179,15 @@ describe("PATCH /member", () => {
       rows: [dbMember],
     } as QueryResult<Member>);
 
+    // Fetch CSRF cookie first
+    const csrfRes = await supertest(app).get("/session");
+    const csrf = getCookie(headerToArray(csrfRes.headers["set-cookie"]), "csrfToken");
+
     const res = await supertest(app)
       .patch("/member")
       .set("Authorization", token)
+      .set("Cookie", `csrfToken=${csrf}`)
+      .set("X-CSRF-Token", csrf)
       .send({
         id: 192,
         name: "Jean",
@@ -193,15 +211,21 @@ describe("DELETE /admin/208", () => {
     };
 
     const token = jwt.sign(
-      { id: testMember.id, admin: testMember.admin },
+      { id: testMember.id, isAdmin: testMember.admin },
       process.env.JWT_SECRET as string,
     );
 
     mockQuery([testMember]);
 
+    // Fetch CSRF cookie first
+    const csrfRes = await supertest(app).get("/session");
+    const csrf = getCookie(headerToArray(csrfRes.headers["set-cookie"]), "csrfToken");
+
     const res = await supertest(app)
       .delete("/admin/208")
-      .set("Authorization", token);
+      .set("Authorization", token)
+      .set("Cookie", `csrfToken=${csrf}`)
+      .set("X-CSRF-Token", csrf);
     expect(res.status).toBe(200);
   });
 });
@@ -226,7 +250,15 @@ describe("POST /signup", () => {
       },
     ]);
 
-    const res = await supertest(app).post("/signup").send(testMember);
+    // Fetch CSRF cookie first
+    const csrfRes = await supertest(app).get("/session");
+    const csrf = getCookie(headerToArray(csrfRes.headers["set-cookie"]), "csrfToken");
+
+    const res = await supertest(app)
+      .post("/signup")
+      .set("Cookie", `csrfToken=${csrf}`)
+      .set("X-CSRF-Token", csrf)
+      .send(testMember);
     expect(res.status).toBe(201);
     expect(res.body.userId).toBe(999);
     expect(res.body.isAdmin).toBe(false);

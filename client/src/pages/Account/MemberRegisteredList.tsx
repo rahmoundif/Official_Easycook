@@ -24,10 +24,8 @@ function MemberRegisteredList() {
     fetch(
       `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/registeredlist`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token") || "",
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       },
     )
       .then((res) => {

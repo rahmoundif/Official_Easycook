@@ -7,18 +7,19 @@ interface JWTPayload {
 }
 
 const checkToken: RequestHandler = (req, res, next) => {
-  //variable token qui est une requete du headers et controle le token coté client.
+  // Read token from Authorization header or HTTP-only cookie
   const authHeader = req.headers.authorization;
+  const cookieToken = (req as any).cookies?.token as string | undefined;
 
-  if (!authHeader) {
+  // Accept either source, prefer header for backward-compat during migration
+  const raw = authHeader || cookieToken;
+  if (!raw) {
     res.status(401).send({ message: "Unauthorized" });
     return;
   }
 
   // Accept either raw token or 'Bearer <token>' format
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7)
-    : authHeader;
+  const token = raw.startsWith("Bearer ") ? raw.slice(7) : raw;
 
   jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
     if (err) {
@@ -28,7 +29,7 @@ const checkToken: RequestHandler = (req, res, next) => {
     }
 
   // On extrait l'ID utilisateur (decoded.id) et on le stocke dans la requête (req.userId) pour un usage ultérieur
-    const { id } = decoded as JWTPayload;
+  const { id } = decoded as JWTPayload;
     req.userId = id;
     next();
   });

@@ -13,17 +13,18 @@ function MemberManage() {
 
   //gestion role admin
   const handleAdminToggle = async (member: Member) => {
-    const token = localStorage.getItem("token");
     setLoading(true);
     try {
+      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/${member.id}`,
         {
           method: "PATCH",
           headers: {
-            Authorization: `${token}`,
             "Content-Type": "application/json",
+            ...(csrf ? { "X-CSRF-Token": csrf } : {}),
           },
+          credentials: "include",
           body: JSON.stringify({ admin: !member.admin }),
         },
       );
@@ -50,13 +51,14 @@ function MemberManage() {
 
   //gestion des comptes
   const handleDelete = async (memberId: number) => {
-    const token = localStorage.getItem("token");
     try {
+      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/${idUserOnline}?idToDelete=${memberId}`,
         {
           method: "DELETE",
-          headers: { Authorization: `${token}` },
+          headers: { ...(csrf ? { "X-CSRF-Token": csrf } : {}) },
+          credentials: "include",
         },
       );
       if (!response.ok) throw new Error("Erreur lors de la suppression");
@@ -76,17 +78,12 @@ function MemberManage() {
 
   useEffect(() => {
     const fetchMembers = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
       try {
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/admin/member`,
           {
-            headers: {
-              Authorization: `${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            credentials: "include",
           },
         );
         if (!response.ok)
@@ -171,11 +168,10 @@ function MemberManage() {
             <div className="flex flex-col gap-2">
               <button
                 type="button"
-                className={`px-4 py-2 rounded font-semibold ${
-                  selectedMember.admin
+                className={`px-4 py-2 rounded font-semibold ${selectedMember.admin
                     ? "bg-primary text-white hover:bg-primary/50"
                     : "bg-green-700 text-white hover:bg-green-600"
-                }`}
+                  }`}
                 disabled={loading}
                 onClick={() => handleAdminToggle(selectedMember)}
               >

@@ -19,14 +19,16 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
 
     const nextValue = !isFavorite;
     try {
-      const res = await fetch(
+  const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+  const res = await fetch(
         `${import.meta.env.VITE_API_URL}/member/favorite/recipe`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("token") || ""}`,
+    ...(csrf ? { "X-CSRF-Token": csrf } : {}),
           },
+          credentials: "include",
 
           body: JSON.stringify({
             recipeId,

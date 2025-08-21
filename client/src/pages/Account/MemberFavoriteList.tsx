@@ -20,10 +20,8 @@ function MemberFavoriteList() {
     fetch(
       `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/favorite`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token") || ""}`,
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       },
     )
       .then((response) => {
@@ -51,8 +49,8 @@ function MemberFavoriteList() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token") || ""}`,
       },
+      credentials: "include",
       body: JSON.stringify({
         recipeId,
         userId: idUserOnline,
