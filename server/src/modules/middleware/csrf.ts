@@ -21,6 +21,13 @@ export const csrfProtection: RequestHandler = (req, res, next) => {
     }
   }
 
+  // If a Bearer token is supplied we can safely bypass CSRF check because
+  // bearer tokens are not automatically attached by the browser => immune to CSRF.
+  const authHeader = req.headers.authorization;
+  if (!isSafe && authHeader && authHeader.startsWith("Bearer ")) {
+    return next();
+  }
+
   const cookieToken = (req as any).cookies?.[CSRF_COOKIE_NAME] as string | undefined;
 
   if (isSafe) {

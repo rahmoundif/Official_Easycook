@@ -95,6 +95,7 @@ function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProp
         className="flex-col text-secondary "
       >
         <textarea
+          value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
           style={{ resize: "none" }}
           maxLength={100}
