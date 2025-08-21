@@ -17,13 +17,15 @@ function MemberFavoriteList() {
   const [favorites, setFavorites] = useState<FavoriteType[]>([]);
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/favorite`,
-      {
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+    if (!idUserOnline) return;
+    const bearer = localStorage.getItem("authToken");
+    fetch(`${import.meta.env.VITE_API_URL}/member/${idUserOnline}/favorite`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
       },
-    )
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -40,15 +42,27 @@ function MemberFavoriteList() {
 
   async function handleToggleFavorite(recipeId: number, current: boolean) {
     // Optimistic update - immediately remove from UI
+    let removed: FavoriteType | undefined;
     if (current) {
-      // If it's currently a favorite and we're removing it, remove from list
-      setFavorites((prev) => prev.filter((fav) => fav.recipe_id !== recipeId));
+      setFavorites((prev) => {
+        removed = prev.find((f) => f.recipe_id === recipeId);
+        return prev.filter((fav) => fav.recipe_id !== recipeId);
+      });
+    } else {
+      // optimistic add toggle: mark is_favorite true locally
+      setFavorites((prev) =>
+        prev.map((f) =>
+          f.recipe_id === recipeId ? { ...f, is_favorite: true } : f,
+        ),
+      );
     }
 
     const { ensureCsrf } = await import("@/lib/csrf");
     const token = await ensureCsrf();
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (token) headers["X-CSRF-Token"] = token;
+    const bearer = localStorage.getItem("authToken");
+    if (bearer) headers["Authorization"] = `Bearer ${bearer}`;
 
     fetch(`${import.meta.env.VITE_API_URL}/member/favorite/recipe`, {
       method: "POST",
@@ -56,7 +70,6 @@ function MemberFavoriteList() {
       credentials: "include",
       body: JSON.stringify({
         recipeId,
-        userId: idUserOnline,
         is_favorite: !current,
       }),
     })
@@ -72,9 +85,15 @@ function MemberFavoriteList() {
       .catch((error) => {
         console.error('Error updating favorite:', error);
         // Revert optimistic update on error
-        if (current) {
-          // Re-add the item back to the list if the API call failed
-          setFavorites((prev) => [...prev, favorites.find((fav) => fav.recipe_id === recipeId)!]);
+        if (current && removed) {
+          setFavorites((prev) => [...prev, removed!]);
+        } else if (!current) {
+          // remove optimistic change
+          setFavorites((prev) =>
+            prev.map((f) =>
+              f.recipe_id === recipeId ? { ...f, is_favorite: false } : f,
+            ),
+          );
         }
         toast.error("Erreur lors de la mise à jour", {
           style: { background: "#452a00", color: "#fde9cc" },

@@ -18,13 +18,14 @@ function MemberCommentedList() {
       return;
     }
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/comments`,
-      {
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+    const bearer = localStorage.getItem("authToken");
+    fetch(`${import.meta.env.VITE_API_URL}/member/${idUserOnline}/comments`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
       },
-    )
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {

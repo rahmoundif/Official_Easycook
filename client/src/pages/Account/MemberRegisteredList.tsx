@@ -21,19 +21,22 @@ function MemberRegisteredList() {
 
   useEffect(() => {
     if (!idUserOnline) return;
-    fetch(
-      `${import.meta.env.VITE_API_URL}/member/${idUserOnline}/registeredlist`,
-      {
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+    const bearer = localStorage.getItem("authToken");
+    fetch(`${import.meta.env.VITE_API_URL}/member/${idUserOnline}/registeredlist`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
       },
-    )
+      credentials: "include",
+    })
       .then((res) => {
-        if (!res.ok) throw new Error("404");
+        if (!res.ok) throw new Error(String(res.status));
         return res.json() as Promise<RegisteredRow[]>;
       })
       .then(setRows)
-      .catch(console.error);
+      .catch((err) => {
+        console.error("Erreur récupération registered list:", err);
+      });
   }, [idUserOnline]);
 
   // Groupe les recipes par list_id ( )
