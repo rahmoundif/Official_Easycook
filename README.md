@@ -195,6 +195,55 @@ Note: All unsafe methods require `X-CSRF-Token` header matching the `csrfToken` 
 - CSRF 403: ensure you GET `/session` first (to receive `csrfToken` cookie) and then send `X-CSRF-Token` for unsafe methods.
 - DB connection errors in tests: tests mock DB; ensure you didn’t remove mocks; avoid hitting real DB in CI.
 
+### Auth & CSRF: Issues Encountered and Fixes
+
+This project went through a few real‑world friction points while integrating cookie auth + CSRF, especially on mobile browsers. Summary of the problems and the concrete fixes applied:
+
+1. Mobile POST actions (comment / favorite / rate) failing:
+
+- Symptom: On some mobile browsers the user appeared logged in (token stored) but POSTs returned 403 (CSRF) or 401.
+- Root cause 1: Some mobile environments blocked or stripped the non‑HTTP‑only `csrfToken` cookie (SameSite or cross‑site limitations), so the client could not echo `X-CSRF-Token`.
+- Root cause 2: The client originally sent `userId` explicitly in the body; if local state had not yet populated (e.g. race on `/session`) it sent `null`, generating inconsistent server behavior and potential 401.
+- Fixes:
+  - Server `csrfProtection` now bypasses CSRF validation when a Bearer token is supplied in `Authorization` (Bearer tokens are not auto‑attached by browsers, so they are not CSRF‑able; this is a standard pattern for mixed cookie / token fallback scenarios).
+  - Server comment/favorite/rate endpoints now trust `req.userId` injected by JWT middleware instead of a `userId` field in the JSON body (prevents spoofing and removes null issues).
+  - Client removed `userId` from those request bodies and always includes `Authorization: Bearer <token>` when a fallback token exists (while still using `credentials: "include"` so cookies work where available).
+
+2. Comment textarea not clearing on mobile after submit:
+
+- Symptom: The text visually stayed even though state reset.
+- Cause: Uncontrolled `<textarea>` (no `value` binding) so DOM value lived outside React state.
+- Fix: Made the textarea controlled (`value={commentText}`), ensuring clearing state updates the UI consistently across browsers.
+
+3. Intermittent 401 vs 403 confusion:
+
+- 401 (Unauthorized) now consistently indicates missing/invalid JWT.
+- 403 (CSRF) previously happened for legitimate authenticated actions without header; after bearer bypass change, 403 should only occur when neither valid CSRF pair nor bearer exists.
+
+4. Diagnosing steps now recommended:
+
+- Check network request: Does it have `Authorization: Bearer ...` or the `csrfToken` cookie + `X-CSRF-Token` header? At least one path must be valid.
+- If bearer missing: verify localStorage still has `authToken` and login flow stored it.
+- If cookie path failing: ensure origin is whitelisted in CORS and cookie `SameSite=None; Secure` in production cross‑site scenarios.
+- Call `GET /session` to (re)issue CSRF cookie/header before the first unsafe action.
+
+5. Security rationale for bearer CSRF bypass:
+
+- CSRF exploits the browser auto‑sending credentials. A manually added bearer header from JS is not auto‑attached cross‑site, so an attacker site cannot forge it; thus CSRF protection can be relaxed for those requests. (Still keep rate limiting / auth checks.)
+
+6. Future hardening ideas:
+
+- Enforce one path: either fully cookie (session) or fully bearer (API), to simplify mental model.
+- Rotate JWT secret periodically; include iat/exp and maybe refresh token flow if sessions lengthen.
+- Add server-side logging that distinguishes CSRF failures vs auth failures explicitly in structured logs.
+
+Implementation references:
+
+- CSRF middleware change: added early return when `Authorization: Bearer` header is present on unsafe methods.
+- Recipe action handlers: now derive `userId` solely from `req.userId`.
+
+With these adjustments, mobile users relying on bearer tokens (due to cookie restrictions) can perform write actions without CSRF friction, while standard desktop flows still benefit from cookie + CSRF defense.
+
 ---
 
 ## Maintenance checklist
