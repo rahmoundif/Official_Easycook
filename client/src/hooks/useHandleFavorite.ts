@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 export function useHandleFavorite(recipeId: number, initialValue: boolean) {
-  const { isConnected, idUserOnline } = useUser();
+  const { isConnected } = useUser();
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(initialValue);
 
@@ -35,7 +35,6 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
 
           body: JSON.stringify({
             recipeId,
-            userId: idUserOnline,
             is_favorite: nextValue,
           }),
         },
@@ -49,7 +48,7 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
     } catch {
   alert("Impossible de mettre à jour le favori (auth ?)");
     }
-  }, [isConnected, idUserOnline, isFavorite, navigate, recipeId]);
+  }, [isConnected, isFavorite, navigate, recipeId]);
 
   return { isFavorite, toggleFavorite };
 }

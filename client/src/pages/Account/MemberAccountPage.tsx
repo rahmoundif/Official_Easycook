@@ -24,7 +24,7 @@ function MemberAccountPage() {
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => data && setProfile(data))
-      .catch(() => {});
+      .catch(() => { });
   }, [idUserOnline, isConnected]);
 
   return (

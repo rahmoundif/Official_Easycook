@@ -17,7 +17,7 @@ interface CommentRecipeProps {
 function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProps) {
   const navigate = useNavigate();
   const [commentText, setCommentText] = useState<string>("");
-  const { isConnected, idUserOnline } = useUser();
+  const { isConnected } = useUser();
 
   async function handleSubmitComment(e: React.FormEvent<HTMLFormElement>) {
     // Prevent default form submission
@@ -29,12 +29,10 @@ function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProp
       navigate("/Compte");
     } else {
       //update or create comment with recipeId, userId
-      const userId = idUserOnline;
-      //creer la donnée a faire passer dans la requete
+      //creer la donnée a faire passer dans la requete (userId maintenant récupéré côté serveur depuis le token)
       const commentData = {
         text: commentText,
         recipeId: recipeId,
-        userId: userId,
       };
       //fetch pour poster la donnée dans la requete
       const { ensureCsrf } = await import("@/lib/csrf");

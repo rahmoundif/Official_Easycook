@@ -37,7 +37,7 @@ function DetailsRecipe() {
   const [comments, setComments] = useState<{ text: string; member: string }[]>(
     [],
   );
-  const { isConnected, idUserOnline, isAdmin } = useUser();
+  const { isConnected, isAdmin, idUserOnline } = useUser();
   const [showEdit, setShowEdit] = useState(false);
 
   // Check if we have a valid recipe ID, if not redirect to recipes
@@ -131,11 +131,7 @@ function DetailsRecipe() {
               : {}),
           },
           credentials: "include",
-          body: JSON.stringify({
-            recipeId,
-            userId: idUserOnline,
-            rate: rate,
-          }),
+          body: JSON.stringify({ recipeId, rate }),
         }).then((response) => {
           if (response.ok) {
             toast.success("Note ajoutée avec succès", {

@@ -224,8 +224,12 @@ const deleteRecipe: RequestHandler = async (req, res, next) => {
 const addComment: RequestHandler = async (req, res, next) => {
   try {
     const recipeId = Number(req.body.recipeId);
-    const userId = Number(req.body.userId);
-    const commentText = String(req.body.text);
+    const userId = req.userId; // always take authenticated user id
+    const commentText = String(req.body.text ?? "").trim();
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
     //verifier si le combo user/recipe existe deja
     const existingCombo = await recipeRepository.checkCombo(recipeId, userId);
     if (existingCombo) {
@@ -236,7 +240,7 @@ const addComment: RequestHandler = async (req, res, next) => {
       return;
     }
     // sinon creer combo avec comment si les variables existes
-    if (!recipeId || !userId || !commentText) {
+    if (Number.isNaN(recipeId) || !commentText) {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }
@@ -277,9 +281,16 @@ const add: RequestHandler = async (req, res, next) => {
 const updateFavorite: RequestHandler = async (req, res, next) => {
   try {
     const recipeId = Number(req.body.recipeId);
-    const userId = Number(req.body.userId);
+    const userId = req.userId;
     const is_favorite = Boolean(req.body.is_favorite);
-
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+    if (Number.isNaN(recipeId)) {
+      res.status(400).json({ message: "Invalid recipe id" });
+      return;
+    }
     const favorite = await recipeRepository.updateFavorite(
       recipeId,
       userId,
@@ -294,8 +305,12 @@ const updateFavorite: RequestHandler = async (req, res, next) => {
 const addRate: RequestHandler = async (req, res, next) => {
   try {
     const recipeId = Number(req.body.recipeId);
-    const userId = Number(req.body.userId);
+    const userId = req.userId;
     const rate = Number(req.body.rate);
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
     //verifier si le combo user/recipe existe deja
     const existingCombo = await recipeRepository.checkCombo(recipeId, userId);
     if (existingCombo) {
@@ -306,7 +321,7 @@ const addRate: RequestHandler = async (req, res, next) => {
       return;
     }
     // sinon creer combo avec rate si les variables existes
-    if (!recipeId || !userId || !rate) {
+    if (Number.isNaN(recipeId) || Number.isNaN(rate)) {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }
