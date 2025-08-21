@@ -126,6 +126,9 @@ function DetailsRecipe() {
           headers: {
             "Content-Type": "application/json",
             ...(csrf ? { "X-CSRF-Token": csrf } : {}),
+            ...(localStorage.getItem("authToken")
+              ? { Authorization: `Bearer ${localStorage.getItem("authToken")}` }
+              : {}),
           },
           credentials: "include",
           body: JSON.stringify({

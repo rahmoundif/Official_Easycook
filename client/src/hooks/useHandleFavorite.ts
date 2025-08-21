@@ -21,6 +21,7 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
     try {
   const { ensureCsrf } = await import("@/lib/csrf");
   const csrf = await ensureCsrf();
+  const bearer = localStorage.getItem("authToken");
   const res = await fetch(
         `${import.meta.env.VITE_API_URL}/member/favorite/recipe`,
         {
@@ -28,6 +29,7 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
           headers: {
             "Content-Type": "application/json",
     ...(csrf ? { "X-CSRF-Token": csrf } : {}),
+    ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
           },
           credentials: "include",
 
@@ -45,7 +47,7 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
         style: { background: "#452a00", color: "#fde9cc" },
       });
     } catch {
-      alert("Impossible de mettre à jour le favori.");
+  alert("Impossible de mettre à jour le favori (auth ?)");
     }
   }, [isConnected, idUserOnline, isFavorite, navigate, recipeId]);
 
