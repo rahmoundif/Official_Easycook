@@ -73,7 +73,13 @@ export function UserProvider({ children }: ContextInterface) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
-      .then((response) => response.json())
+      .then(async (response) => {
+        try {
+          // capture CSRF from header for cross-site
+          (await import("@/lib/csrf")).captureCsrfFromResponse(response);
+        } catch { }
+        return response.json();
+      })
       .then((payload) => {
         if (payload?.authenticated) {
           // payload.user includes user fields without password
@@ -100,7 +106,8 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+    const { ensureCsrf } = await import("@/lib/csrf");
+    const csrf = await ensureCsrf();
     const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
       method: "POST",
       headers: {
@@ -132,13 +139,15 @@ export function UserProvider({ children }: ContextInterface) {
 
   async function handleSubmitSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const csrf2 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+    const { ensureCsrf } = await import("@/lib/csrf");
+    const csrf2 = await ensureCsrf();
     const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...(csrf2 ? { "X-CSRF-Token": csrf2 } : {}),
       },
+      credentials: "include",
       body: JSON.stringify(user),
     });
     if (response.ok) {
@@ -178,7 +187,8 @@ export function UserProvider({ children }: ContextInterface) {
   async function handleUpdateMember(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const csrf3 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+      const { ensureCsrf } = await import("@/lib/csrf");
+      const csrf3 = await ensureCsrf();
       const res = await fetch(`${import.meta.env.VITE_API_URL}/member`, {
         method: "PATCH",
         headers: {
@@ -215,7 +225,8 @@ export function UserProvider({ children }: ContextInterface) {
     if (!window.confirm("Voulez-vous vraiment supprimer votre compte ?"))
       return;
     try {
-      const csrf4 = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+      const { ensureCsrf } = await import("@/lib/csrf");
+      const csrf4 = await ensureCsrf();
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/member/${idUserOnline}`,
         {

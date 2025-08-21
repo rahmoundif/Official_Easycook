@@ -27,9 +27,14 @@ export const csrfProtection: RequestHandler = (req, res, next) => {
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
+        // Also expose the token in a response header for cross-site clients
+        res.setHeader("X-CSRF-Token", token);
       } catch {
         // ignore if cookie helper missing
       }
+    } else {
+      // Cookie already exists; expose it in header so cross-site clients can read it
+      res.setHeader("X-CSRF-Token", cookieToken);
     }
     return next();
   }

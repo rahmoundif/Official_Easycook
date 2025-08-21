@@ -5,10 +5,13 @@ function recipeManage() {
   const [recipeList, setrecipeList] = useState<Recipe[]>([]);
   const handleDelete = async (recipeId: number) => {
     try {
+      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/recipe/${recipeId}`,
         {
           method: "DELETE",
+          headers: { ...(csrf ? { "X-CSRF-Token": csrf } : {}) },
+          credentials: "include",
         },
       );
 
@@ -54,7 +57,7 @@ function recipeManage() {
             <button
               className="py-1 cursor-pointer text-secondary"
               type="button"
-              //onClick={() => handleDelete(recipe.id)}
+            //onClick={() => handleDelete(recipe.id)}
             >
               Modifier la recette <i className="bi bi-pencil-square" />
             </button>

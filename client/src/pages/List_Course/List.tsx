@@ -81,7 +81,8 @@ function List() {
 
   async function handleValidList() {
     if (currentList.length > 0 && isConnected) {
-      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+      const { ensureCsrf } = await import("@/lib/csrf");
+      const csrf = await ensureCsrf();
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/member/${userOnline?.id}/list`,
         {

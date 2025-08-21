@@ -37,7 +37,8 @@ function CommentRecipe({ comments, recipeId, onCommentAdded }: CommentRecipeProp
         userId: userId,
       };
       //fetch pour poster la donnée dans la requete
-      const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+      const { ensureCsrf } = await import("@/lib/csrf");
+      const csrf = await ensureCsrf();
       fetch(`${import.meta.env.VITE_API_URL}/member/comment/recipe`, {
         method: "POST",
         headers: {

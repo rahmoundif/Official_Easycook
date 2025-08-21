@@ -119,7 +119,8 @@ function DetailsRecipe() {
       navigate("/Compte");
     } else {
       (async () => {
-        const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+        const { ensureCsrf } = await import("@/lib/csrf");
+        const csrf = await ensureCsrf();
         fetch(`${import.meta.env.VITE_API_URL}/member/rate/recipe`, {
           method: "POST",
           headers: {

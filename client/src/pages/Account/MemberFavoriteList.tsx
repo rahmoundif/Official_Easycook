@@ -38,18 +38,21 @@ function MemberFavoriteList() {
       });
   }, [idUserOnline]);
 
-  function handleToggleFavorite(recipeId: number, current: boolean) {
+  async function handleToggleFavorite(recipeId: number, current: boolean) {
     // Optimistic update - immediately remove from UI
     if (current) {
       // If it's currently a favorite and we're removing it, remove from list
       setFavorites((prev) => prev.filter((fav) => fav.recipe_id !== recipeId));
     }
 
+    const { ensureCsrf } = await import("@/lib/csrf");
+    const token = await ensureCsrf();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) headers["X-CSRF-Token"] = token;
+
     fetch(`${import.meta.env.VITE_API_URL}/member/favorite/recipe`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       credentials: "include",
       body: JSON.stringify({
         recipeId,

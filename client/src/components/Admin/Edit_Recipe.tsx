@@ -171,7 +171,8 @@ function Edit_Recipe({
       ingredients: selectedIngredients,
       ustensils: selectedUstensils,
     };
-    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+    const { ensureCsrf } = await import("@/lib/csrf");
+    const csrf = await ensureCsrf();
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/admin/recipe/${recipeId}`,
       {

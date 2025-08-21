@@ -118,7 +118,8 @@ function CreateRecipe() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+    const { ensureCsrf } = await import("@/lib/csrf");
+    const csrf = await ensureCsrf();
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/admin/recipe`,
       {
@@ -147,9 +148,14 @@ function CreateRecipe() {
 
     // Ajout des ustensiles liés à la recette
     if (recipeId && selectedUstensils.length > 0) {
+      const csrfU = await ensureCsrf();
       await fetch(`${import.meta.env.VITE_API_URL}/ustensil/${recipeId}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfU ? { "X-CSRF-Token": csrfU } : {}),
+        },
+        credentials: "include",
         body: JSON.stringify({ ustensils: selectedUstensils }),
       });
     }

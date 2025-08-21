@@ -19,7 +19,8 @@ export function useHandleFavorite(recipeId: number, initialValue: boolean) {
 
     const nextValue = !isFavorite;
     try {
-  const csrf = (await import("@/lib/csrf")).getCsrfTokenFromCookie();
+  const { ensureCsrf } = await import("@/lib/csrf");
+  const csrf = await ensureCsrf();
   const res = await fetch(
         `${import.meta.env.VITE_API_URL}/member/favorite/recipe`,
         {
