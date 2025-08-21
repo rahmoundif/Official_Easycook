@@ -12,7 +12,7 @@ function SignUp({ className, onBack, ...props }: SignUpProps) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0 border-none mx-10 my-10">
+      <Card className="overflow-hidden p-0 border-none mx-auto my-10">
         <CardContent className="grid p-0 ">
           <form onSubmit={handleSubmitSignUp} className="p-6 md:p-8 ">
             <div className="flex flex-col gap-6">
