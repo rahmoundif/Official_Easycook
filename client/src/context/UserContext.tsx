@@ -69,20 +69,23 @@ export function UserProvider({ children }: ContextInterface) {
 
 
   useEffect(() => {
+    // Try cookie-based session first, with bearer fallback for mobile browsers blocking third-party cookies
+    const token = localStorage.getItem("authToken");
     fetch(`${import.meta.env.VITE_API_URL}/session`, {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       credentials: "include",
     })
       .then(async (response) => {
         try {
-          // capture CSRF from header for cross-site
           (await import("@/lib/csrf")).captureCsrfFromResponse(response);
         } catch { }
         return response.json();
       })
       .then((payload) => {
         if (payload?.authenticated) {
-          // payload.user includes user fields without password
           setIsConnected(true);
           setIdUserOnline(payload.userId);
           setIsAdmin(payload.isAdmin ?? payload.user?.admin ?? false);
@@ -125,6 +128,10 @@ export function UserProvider({ children }: ContextInterface) {
       setIsAdmin(data.isAdmin ?? data.admin);
       setIdUserOnline(data.userId);
       setUserOnline(data);
+      // Mobile Safari / some browsers block third-party cookies => store bearer fallback
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+      }
       navigate("/Compte");
     } else {
       setIsConnected(false);
@@ -155,8 +162,15 @@ export function UserProvider({ children }: ContextInterface) {
       setIsConnected(true);
       setIdUserOnline(data.userId);
       setUserOnline(data);
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+      }
       navigate("/Compte");
       toast.success("Compte créé avec succès", {
+        style: { background: "#452a00", color: "#fde9cc" },
+      });
+    } else {
+      toast.error("Erreur lors de la création du compte", {
         style: { background: "#452a00", color: "#fde9cc" },
       });
     }
@@ -172,14 +186,19 @@ export function UserProvider({ children }: ContextInterface) {
   // Supression Token avec bouton --------------------------------
   async function handleDisconnect() {
     try {
+      const token = localStorage.getItem("authToken");
       await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         method: "POST",
         credentials: "include",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
     } catch { }
     setIsConnected(false);
     setIdUserOnline(null);
     setUserOnline(undefined);
+    localStorage.removeItem("authToken");
     localStorage.removeItem("currentList");
     window.location.reload();
   }
@@ -194,6 +213,9 @@ export function UserProvider({ children }: ContextInterface) {
         headers: {
           "Content-Type": "application/json",
           ...(csrf3 ? { "X-CSRF-Token": csrf3 } : {}),
+          ...(localStorage.getItem("authToken")
+            ? { Authorization: `Bearer ${localStorage.getItem("authToken")}` }
+            : {}),
         },
         credentials: "include",
         body: JSON.stringify({
@@ -231,7 +253,12 @@ export function UserProvider({ children }: ContextInterface) {
         `${import.meta.env.VITE_API_URL}/member/${idUserOnline}`,
         {
           method: "DELETE",
-          headers: { ...(csrf4 ? { "X-CSRF-Token": csrf4 } : {}) },
+          headers: {
+            ...(csrf4 ? { "X-CSRF-Token": csrf4 } : {}),
+            ...(localStorage.getItem("authToken")
+              ? { Authorization: `Bearer ${localStorage.getItem("authToken")}` }
+              : {}),
+          },
           credentials: "include",
         },
       );
@@ -245,7 +272,7 @@ export function UserProvider({ children }: ContextInterface) {
       toast.success("Compte supprimé avec succès", {
         style: { background: "#452a00", color: "#fde9cc" },
       });
-      localStorage.removeItem("token");
+      localStorage.removeItem("authToken");
       setIsConnected(false);
       // Optionally redirect
       // navigate("/login");
