@@ -43,7 +43,7 @@ class userRepository {
   async login(email: string) {
     const result = await databaseClient.query(
       `SELECT id, email, admin, password FROM member
-        WHERE email = $1`,
+        WHERE LOWER(email) = LOWER($1)`,
       [email],
     );
     //retourn la ligne crée
