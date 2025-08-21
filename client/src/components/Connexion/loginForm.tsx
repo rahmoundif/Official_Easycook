@@ -17,7 +17,7 @@ export function LoginForm({
   return (
     <>
       {signUp ? (
-        <SignUp />
+        <SignUp onBack={() => setSignUp(false)} />
       ) : (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
           <Card className="overflow-hidden p-0 border-none m-auto mt-10">
@@ -121,13 +121,13 @@ export function LoginForm({
                     </Button>
                   </div>
                   <div className="text-center text-sm text-secondary">
-                    Don&apos;t have an account?{" "}
+                    Pas encore de compte ?{" "}
                     <button
                       type="button"
                       onClick={() => setSignUp(true)}
                       className="underline underline-offset-4"
                     >
-                      Sign up
+                      S'inscrire
                     </button>
                   </div>
                 </div>

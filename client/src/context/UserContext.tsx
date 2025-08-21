@@ -162,6 +162,7 @@ export function UserProvider({ children }: ContextInterface) {
       setIsConnected(true);
       setIdUserOnline(data.userId);
       setUserOnline(data);
+      setIsAdmin(data.isAdmin ?? data.admin ?? false);
       if (data.token) {
         localStorage.setItem("authToken", data.token);
       }
@@ -187,20 +188,26 @@ export function UserProvider({ children }: ContextInterface) {
   async function handleDisconnect() {
     try {
       const token = localStorage.getItem("authToken");
+      const csrfCookie = document.cookie
+        .split("; ")
+        .find((c) => c.startsWith("csrfToken="))
+        ?.split("=")[1];
       await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
-        method: "POST",
+        method: "GET",
         credentials: "include",
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(csrfCookie ? { "X-CSRF-Token": csrfCookie } : {}),
         },
       });
     } catch { }
     setIsConnected(false);
     setIdUserOnline(null);
     setUserOnline(undefined);
+    setIsAdmin(false); // ensure admin flag cleared immediately on logout
     localStorage.removeItem("authToken");
     localStorage.removeItem("currentList");
-    window.location.reload();
+    // No immediate reload; session effect will see no auth and keep logged out
   }
 
   async function handleUpdateMember(e: React.FormEvent<HTMLFormElement>) {

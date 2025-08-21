@@ -11,6 +11,7 @@ import unityActions from "./modules/unity/unityActions";
 import memberActions from "./modules/user/memberActions";
 import ustensilActions from "./modules/ustensil/ustensilActions";
 
+
 /* ************************************************************************* */
 // Define Your API Routes Here
 /* ************************************************************************* */
@@ -48,12 +49,9 @@ router.get("/rate/recipe/:id", recipeActions.rate); //pour afficher la note et l
 router.post("/signup", memberActions.add, memberActions.login); // le "Add" permet de rajouter le compte et l'action "login" de ce log directement avec un token.
 router.post("/login", memberActions.login); //l'action "login" permet de ce log directement avec un token si membre existant.
 router.get("/session", memberActions.session); // public session status endpoint without 401
-router.post("/logout", (req, res) => {
-	try {
-		(res as any).clearCookie?.("token");
-	} catch {}
-	res.status(200).json({ message: "Logged out" });
-});
+// Allow both POST and GET for logout (GET avoids CSRF requirement if token missing)
+router.post("/logout", memberActions.logoutHandler);
+router.get("/logout", memberActions.logoutHandler);
 //Zone Membre ----------------------
 router.patch("/member", memberActions.editMember); // modification du profile membre
 router.get("/member/:id/profile", memberActions.readMemberProfile); // pour afficher le profile d'un membre

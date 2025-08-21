@@ -315,6 +315,17 @@ const UpdateAdminStatus: RequestHandler = async (req, res, next) => {
   }
 };
 
+const logoutHandler: RequestHandler = (req, res) => {
+	try {
+		res.clearCookie?.("token", {
+			path: "/",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+			secure: process.env.NODE_ENV === "production",
+		});
+	} catch {}
+	res.status(200).json({ message: "Logged out" });
+};
+
 export default {
   browse,
   read,
@@ -330,4 +341,5 @@ export default {
   readCommented,
   readMemberProfile,
   UpdateAdminStatus,
+  logoutHandler
 };
