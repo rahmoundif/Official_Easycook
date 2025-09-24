@@ -1,0 +1,8 @@
+# robots.txt for EASY!Cook
+# Allow all crawlers by default. Sitemap now points to the deployed site on Vercel.
+
+User-agent: *
+Allow: /
+
+# Sitemap for the deployed site
+Sitemap: https://official-easycook.vercel.app/sitemap.xml

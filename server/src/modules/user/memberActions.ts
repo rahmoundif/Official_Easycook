@@ -6,13 +6,11 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch all items
     const members = await memberRepository.readAll();
 
-    // Respond with the items in JSON format
     res.json(members);
   } catch (err) {
-    // Pass any errors to the error-handling middleware
+   
     next(err);
   }
 };
@@ -32,7 +30,6 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-// // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
     const newMember = {
