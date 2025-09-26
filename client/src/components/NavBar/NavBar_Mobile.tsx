@@ -12,37 +12,37 @@ function NavBar_Mobile() {
   useClickOutside(menuRef, closeMenu);
 
   return (
-    <div aria-expanded={isOpen} ref={menuRef}>
+    <div ref={menuRef}>
       <section className="absolute top-5 right-5 ">
         <button
           type="button"
+          aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
           className={`flex flex-col justify-between w-8 h-6 ${isOpen ? "open" : ""}`}
           onClick={toggleMenu}
         >
           <span
-            className={`block h-1 w-full rounded transition-transform duration-300  ${
-              isOpen
+            className={`block h-1 w-full rounded transition-transform duration-300  ${isOpen
                 ? "bg-primary transform rotate-45 translate-y-2.5 "
                 : "bg-secondary"
-            }`}
+              }`}
           />
           <span
-            className={`block h-1 w-full rounded transition-opacity  ${
-              isOpen ? "opacity-0" : "bg-secondary"
-            }`}
+            className={`block h-1 w-full rounded transition-opacity  ${isOpen ? "opacity-0" : "bg-secondary"
+              }`}
           />
           <span
-            className={`block h-1 w-full rounded transition-transform duration-300 ${
-              isOpen
+            className={`block h-1 w-full rounded transition-transform duration-300 ${isOpen
                 ? "bg-primary transform -rotate-45 -translate-y-2.5"
                 : "bg-secondary"
-            }`}
+              }`}
           />
         </button>
       </section>
 
       {isOpen && (
-        <div className=" absolute w-[40%] right-0 shadow-2xl pt-2 bg-[#fde9cc] rounded-bl-2xl z-3">
+        <div id="mobile-menu" className=" absolute w-[40%] right-0 shadow-2xl pt-2 bg-[#fde9cc] rounded-bl-2xl z-3">
           <div className="font-semibold pb-4 text-right ">
             <Link
               to="/Recettes"
