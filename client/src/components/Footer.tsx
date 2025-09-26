@@ -33,16 +33,36 @@ function Footer() {
           </Link>
         </div>
         <div className="order-3 md:order-1 flex justify-center md:justify-start gap-2 py-4 lg:py-10 md:py-8 xl:py-10 w-full md:w-1/3">
-          <a href="https://www.facebook.com/">
-            <i className="text-3xl md:text-4xl xl:text-5xl bi bi-facebook text-secondary" />
-          </a>
-          <a href="https://www.instagram.com/">
-            <i className="text-3xl md:text-4xl xl:text-5xl bi bi-instagram text-secondary" />
-          </a>
-          <a href="https://fr.pinterest.com/">
-            <i className="text-3xl md:text-4xl xl:text-5xl bi bi-pinterest text-secondary" />
-          </a>
-        </div>
+  <a
+    href="https://www.facebook.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center rounded-lg p-2 min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary/60"
+  >
+    <i aria-hidden="true" className="text-3xl md:text-4xl xl:text-5xl bi bi-facebook text-secondary" />
+    <span className="sr-only">Facebook (ouvre dans un nouvel onglet)</span>
+  </a>
+
+  <a
+    href="https://www.instagram.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center rounded-lg p-2 min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary/60"
+  >
+    <i aria-hidden="true" className="text-3xl md:text-4xl xl:text-5xl bi bi-instagram text-secondary" />
+    <span className="sr-only">Instagram (ouvre dans un nouvel onglet)</span>
+  </a>
+
+  <a
+    href="https://fr.pinterest.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center rounded-lg p-2 min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary/60"
+  >
+    <i aria-hidden="true" className="text-3xl md:text-4xl xl:text-5xl bi bi-pinterest text-secondary" />
+    <span className="sr-only">Pinterest (ouvre dans un nouvel onglet)</span>
+  </a>
+</div>
       </section>
       <p className="text-center font-bold py-2 text-sm md:text-base xl:text-lg">
         <i className="bi bi-c-circle" /> Easy Cook
