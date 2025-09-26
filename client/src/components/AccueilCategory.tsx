@@ -44,9 +44,9 @@ function AccueilCategory() {
 
             {/* Nom de la catégorie */}
             <div className="relative z-10 w-full flex flex-col items-center justify-end pb-6">
-              <h4 className="text-white text-2xl font-semibold text-center bg-primary/60 w-full py-2  shadow-lg mb-2 drop-shadow-lg">
+              <h3 className="text-white text-2xl font-semibold text-center bg-primary/60 w-full py-2  shadow-lg mb-2 drop-shadow-lg">
                 {recipe.name}
-              </h4>
+              </h3>
               {/* Description courte (exemple générique) */}
               <span className="text-sec font-semibold text-center px-2 pb-2">
                 Découvrez toutes les recettes de la catégorie{" "}
